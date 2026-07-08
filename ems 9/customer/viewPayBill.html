@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My bills — VoltGrid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand"><span class="bolt">⚡</span><span>VoltGrid<small>Customer</small></span></div>
+    <nav>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="viewPayBill.html" class="active">Bills</a>
+      <a href="registerComplaint.html">New complaint</a>
+      <a href="complaintStatus.html">My complaints</a>
+    </nav>
+    <div class="flex">
+      <div class="who"><strong id="whoName"></strong><span id="whoMeta"></span></div>
+      <button id="logoutBtn" class="btn btn-ghost btn-sm">Log out</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <p class="eyebrow">Billing</p>
+    <h1>View &amp; pay bills</h1>
+    <p class="muted mb-2">Unpaid bills can be settled instantly by card or UPI.</p>
+
+    <div class="glass">
+      <div class="table-wrap">
+        <table class="glass-table">
+          <thead>
+            <tr><th>Bill ID</th><th>Month</th><th>Units</th><th>Amount</th><th>Due date</th><th>Status</th><th></th></tr>
+          </thead>
+          <tbody id="billRows"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/chrome.js"></script>
+  <script src="../js/customer/viewPayBill.js"></script>
+</body>
+</html>

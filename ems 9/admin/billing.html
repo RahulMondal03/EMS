@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generate a bill — VoltGrid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand"><span class="bolt">⚡</span><span>VoltGrid<small>Staff console</small></span></div>
+    <nav id="vg-nav" data-active="billing"></nav>
+    <div class="flex">
+      <div class="who"><strong id="whoName"></strong><span id="whoMeta"></span></div>
+      <button id="logoutBtn" class="btn btn-ghost btn-sm">Log out</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <p class="eyebrow">Billing</p>
+    <h1>Generate a bill</h1>
+    <p class="muted mb-2">Enter metered units and VoltGrid applies the current slab tariffs automatically.</p>
+
+    <div class="grid cols-2" style="grid-template-columns: 1.05fr 1fr; align-items:start;">
+      <!-- Form -->
+      <div class="glass">
+        <h2 class="mb-2">Meter reading</h2>
+        <div id="alert" class="alert success"></div>
+
+        <div class="field">
+          <label for="customer">Customer</label>
+          <select id="customer">
+            <option value="">Select an account…</option>
+          </select>
+          <div class="error-msg"></div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="month">Billing month</label>
+            <input id="month" type="text" placeholder="e.g. July 2026" />
+            <div class="error-msg"></div>
+          </div>
+          <div class="field">
+            <label for="units">Units consumed (kWh)</label>
+            <input id="units" type="number" min="0" step="1" placeholder="0" />
+            <div class="error-msg"></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Tariff</label>
+          <div class="method-pick" style="margin:2px 0 0;">
+            <label><input type="radio" name="mode" value="standard" checked /><span>⚡ Standard slabs</span></label>
+            <label><input type="radio" name="mode" value="green" /><span>🌿 Green rooftop</span></label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="due">Due date</label>
+          <input id="due" type="date" />
+          <div class="error-msg"></div>
+        </div>
+
+        <button id="generateBtn" class="btn btn-primary btn-block">Generate bill</button>
+      </div>
+
+      <!-- Live breakdown -->
+      <div class="glass">
+        <h2 class="mb-2">Bill preview</h2>
+        <p class="muted" style="margin-bottom:12px;">Updates as you type. Slab rates come from Policy Management.</p>
+        <div class="bill-summary" id="preview"></div>
+      </div>
+    </div>
+
+    <div class="glass mt-3">
+      <div class="card-head">
+        <h2>Recently generated bills</h2>
+        <a class="btn btn-ghost btn-sm" href="dashboard.html">Back to dashboard</a>
+      </div>
+      <div class="table-wrap">
+        <table class="glass-table">
+          <thead>
+            <tr><th>Bill ID</th><th>Customer</th><th>Month</th><th>Units</th><th>Amount</th><th>Due</th><th>Status</th></tr>
+          </thead>
+          <tbody id="recentRows"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/chrome.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/admin/billing.js"></script>
+</body>
+</html>

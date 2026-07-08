@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VoltGrid — Electricity Management System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/landing.css" />
+</head>
+<body>
+
+  <main class="lp">
+
+    <!-- Brand row -->
+    <header class="lp-top">
+      <div class="brand">
+        <span class="bolt">⚡</span>
+        <span>VoltGrid<small>Electricity Management</small></span>
+      </div>
+      <span class="status"><span class="dot"></span>Grid online · all services up</span>
+    </header>
+
+    <!-- Hero: copy left, live product preview right -->
+    <section class="lp-hero">
+      <div class="lp-hero-copy">
+        <p class="eyebrow">Utility account portal</p>
+        <h1>Meter to money,<br /><span class="spark">handled in one place.</span></h1>
+        <p class="lead">
+          Read the meter, generate the bill, take the payment, and close the
+          complaint — VoltGrid keeps the whole loop under one roof for customers,
+          field staff and administrators.
+        </p>
+
+        <div class="lp-cta-row">
+          <a class="btn btn-primary" href="#portals">Choose your portal ↓</a>
+          <a class="btn btn-ghost" href="customer/register.html">New connection</a>
+        </div>
+
+        <div class="lp-readouts">
+          <span>Pay by <b>card&nbsp;or&nbsp;UPI</b></span>
+          <span><b>3</b>&nbsp;live tariffs</span>
+          <span>Complaints tracked <b>end&nbsp;to&nbsp;end</b></span>
+        </div>
+      </div>
+
+      <!-- Illustrative smart-meter card (device telemetry, not account data) -->
+      <div class="lp-visual">
+        <div class="glass lp-meter">
+          <div class="lp-meter-top">
+            <span class="tag">⚡ Smart Meter</span>
+            <span class="conn"><i></i>Connected</span>
+          </div>
+
+          <div class="lp-meter-main">
+            <div class="k">Today's usage</div>
+            <div class="big"><span id="mUsage">14.2</span> <small>kWh</small></div>
+            <div class="lp-bars" id="mBars"></div>
+          </div>
+
+          <div class="lp-meter-grid">
+            <div class="cell">
+              <div class="ck">Current load</div>
+              <div class="cv"><span id="mLoad">3.2</span> <small>kW</small></div>
+            </div>
+            <div class="cell">
+              <div class="ck">Voltage</div>
+              <div class="cv"><span id="mVolt">230</span> <small>V</small></div>
+            </div>
+            <div class="cell">
+              <div class="ck">Frequency</div>
+              <div class="cv"><span id="mFreq">50.0</span> <small>Hz</small></div>
+            </div>
+            <div class="cell">
+              <div class="ck">Power factor</div>
+              <div class="cv"><span id="mPf">0.98</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Portal chooser -->
+    <section class="lp-portals" id="portals">
+      <div class="lp-portals-head">
+        <h2>Choose your portal</h2>
+        <span>Two ways in, one grid.</span>
+        <span class="rule"></span>
+      </div>
+
+      <div class="lp-doors lp-doors-2">
+        <a class="glass lp-door" href="customer/login.html">
+          <div class="icon">🏠</div>
+          <h3>Customer</h3>
+          <p>Check monthly usage, pay bills by card or UPI, and follow each complaint from open to resolved.</p>
+          <span class="enter">Sign in as customer <span class="arrow">→</span></span>
+        </a>
+
+        <a class="glass lp-door" href="employee/login.html">
+          <div class="icon">🛠️</div>
+          <h3>Employee</h3>
+          <p>Sign in to your workspace. What you can do depends on your position — a field agent works their queue, while a grid manager runs tariffs, billing, staff and complaint routing.</p>
+          <span class="enter">Sign in as employee <span class="arrow">→</span></span>
+        </a>
+      </div>
+    </section>
+
+    <p class="lp-foot">
+      Demo sign-ins — customer <code>anita@example.com / anita123</code> ·
+      manager <code>suresh@voltgrid.com / suresh123</code> ·
+      supervisor <code>priya@voltgrid.com / priya123</code> ·
+      field agent <code>arjun@voltgrid.com / arjun123</code>
+    </p>
+  </main>
+
+  <script>
+    /* Gently "live" smart-meter readings — small, self-contained,
+       and skipped entirely if the user prefers reduced motion. */
+    (function () {
+      var bars = document.getElementById("mBars");
+      if (bars) {
+        [34,44,38,56,60,50,54,68,72,63,58,71,64,76,80,70,66,79,84,74,69,83]
+          .forEach(function (h) { var i = document.createElement("i"); i.style.height = h + "%"; bars.appendChild(i); });
+      }
+      var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduce) return;
+
+      var usage = 14.2;
+      var U = document.getElementById("mUsage"), L = document.getElementById("mLoad"),
+          V = document.getElementById("mVolt"), F = document.getElementById("mFreq"), P = document.getElementById("mPf");
+      var wobble = function (base, amp, dec) { return (base + (Math.random() * 2 - 1) * amp).toFixed(dec); };
+
+      setInterval(function () {
+        usage += Math.random() * 0.06;                 // meter slowly accumulates
+        if (U) U.textContent = usage.toFixed(1);
+        if (L) L.textContent = wobble(3.2, 0.5, 1);
+        if (V) V.textContent = wobble(230, 2, 0);
+        if (F) F.textContent = wobble(50, 0.08, 2);
+        if (P) P.textContent = wobble(0.97, 0.02, 2);
+        if (bars && bars.lastElementChild)             // nudge the live bar
+          bars.lastElementChild.style.height = (64 + Math.random() * 26) + "%";
+      }, 1600);
+    })();
+  </script>
+
+  <script src="js/chrome.js"></script>
+
+</body>
+</html>

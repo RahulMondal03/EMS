@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register — VoltGrid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+</head>
+<body>
+  <div class="auth-shell">
+    <div class="glass auth-card" style="width:min(520px,100%);">
+      <div class="brand"><span class="bolt">⚡</span><span>VoltGrid<small>New connection</small></span></div>
+      <h1>Create your account</h1>
+      <p class="sub muted">A meter number is generated for you automatically.</p>
+
+      <div id="alert" class="alert error"></div>
+
+      <div class="form-row">
+        <div class="field">
+          <label for="name">Full name</label>
+          <input id="name" type="text" placeholder="Anita Menon" />
+          <div class="error-msg"></div>
+        </div>
+        <div class="field">
+          <label for="phone">Mobile number</label>
+          <input id="phone" type="tel" placeholder="10-digit mobile" maxlength="10" />
+          <div class="error-msg"></div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input id="email" type="email" placeholder="you@example.com" />
+        <div class="error-msg"></div>
+      </div>
+
+      <div class="field">
+        <label for="address">Service address</label>
+        <input id="address" type="text" placeholder="House, street, city" />
+        <div class="error-msg"></div>
+      </div>
+
+      <div class="form-row">
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" type="password" placeholder="Min 6 characters" />
+          <div class="error-msg"></div>
+        </div>
+        <div class="field">
+          <label for="confirm">Confirm password</label>
+          <input id="confirm" type="password" placeholder="Repeat password" />
+          <div class="error-msg"></div>
+        </div>
+      </div>
+
+      <button id="registerBtn" class="btn btn-primary btn-block mt-1">Create account</button>
+
+      <div class="auth-links">
+        Already registered? <a href="login.html">Sign in</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/chrome.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/customer/register.js"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Employee login — VoltGrid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+</head>
+<body>
+  <div class="auth-shell">
+    <div class="glass auth-card">
+      <div class="brand"><span class="bolt">⚡</span><span>VoltGrid<small>Employee workspace</small></span></div>
+      <h1>Employee sign in</h1>
+      <p class="sub muted">Your assigned complaints and customer lookup.</p>
+
+      <div id="alert" class="alert error"></div>
+
+      <div class="field">
+        <label for="email">Work email</label>
+        <input id="email" type="email" placeholder="you@voltgrid.com" />
+        <div class="error-msg"></div>
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="••••••••" />
+        <div class="error-msg"></div>
+      </div>
+
+      <button id="loginBtn" class="btn btn-primary btn-block mt-1">Sign in</button>
+
+      <div class="auth-links"><a href="../index.html" class="muted">← Back to home</a></div>
+    </div>
+  </div>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/chrome.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/employee/login.js"></script>
+</body>
+</html>

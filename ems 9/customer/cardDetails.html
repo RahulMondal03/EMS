@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Card details — VoltGrid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand"><span class="bolt">⚡</span><span>VoltGrid<small>Customer</small></span></div>
+    <nav>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="viewPayBill.html" class="active">Bills</a>
+      <a href="registerComplaint.html">New complaint</a>
+      <a href="complaintStatus.html">My complaints</a>
+    </nav>
+    <div class="flex">
+      <div class="who"><strong id="whoName"></strong><span id="whoMeta"></span></div>
+      <button id="logoutBtn" class="btn btn-ghost btn-sm">Log out</button>
+    </div>
+  </header>
+
+  <main class="page" style="max-width:480px;">
+    <p class="eyebrow">Checkout · Card</p>
+    <h1>Card details</h1>
+    <p class="muted mb-2">This is a demo — no real charge is made.</p>
+
+    <!-- Live-updating card mock -->
+    <div class="card-preview">
+      <div>VoltGrid Pay</div>
+      <div class="num" id="pvNum">•••• •••• •••• ••••</div>
+      <div class="meta">
+        <span id="pvName">CARDHOLDER</span>
+        <span id="pvExp">MM/YY</span>
+      </div>
+    </div>
+
+    <div class="glass">
+      <div id="alert" class="alert error"></div>
+
+      <div class="field">
+        <label for="cardName">Name on card</label>
+        <input id="cardName" type="text" placeholder="As printed on the card" />
+        <div class="error-msg"></div>
+      </div>
+      <div class="field">
+        <label for="cardNumber">Card number</label>
+        <input id="cardNumber" type="text" inputmode="numeric" placeholder="16 digits" maxlength="19" />
+        <div class="error-msg"></div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="expiry">Expiry (MM/YY)</label>
+          <input id="expiry" type="text" placeholder="08/27" maxlength="5" />
+          <div class="error-msg"></div>
+        </div>
+        <div class="field">
+          <label for="cvv">CVV</label>
+          <input id="cvv" type="password" inputmode="numeric" placeholder="3 digits" maxlength="3" />
+          <div class="error-msg"></div>
+        </div>
+      </div>
+
+      <button id="payBtn" class="btn btn-primary btn-block mt-1">Pay now</button>
+      <a class="btn btn-ghost btn-block mt-1" href="payment.html">← Back</a>
+    </div>
+  </main>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/chrome.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/customer/cardDetails.js"></script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Employee management — VoltGrid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand"><span class="bolt">⚡</span><span>VoltGrid<small>Staff console</small></span></div>
+    <nav id="vg-nav" data-active="employees"></nav>
+    <div class="flex">
+      <div class="who"><strong id="whoName"></strong><span id="whoMeta"></span></div>
+      <button id="logoutBtn" class="btn btn-ghost btn-sm">Log out</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <p class="eyebrow">People</p>
+    <h1>Employee management</h1>
+    <p class="muted mb-2">Field and support staff who resolve complaints.</p>
+
+    <div class="grid cols-2" style="grid-template-columns: 1.4fr 1fr; align-items:start;">
+      <div class="glass">
+        <h2 class="mb-2">Team</h2>
+        <div class="table-wrap">
+          <table class="glass-table">
+            <thead><tr><th>ID</th><th>Name</th><th>Position</th><th>Department</th><th>Active work</th><th></th></tr></thead>
+            <tbody id="employeeRows"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="glass">
+        <h2 class="mb-2">Add an employee</h2>
+        <div id="alert" class="alert success"></div>
+        <div class="field">
+          <label for="ename">Full name</label>
+          <input id="ename" type="text" placeholder="Suresh Nair" />
+          <div class="error-msg"></div>
+        </div>
+        <div class="field">
+          <label for="eemail">Work email</label>
+          <input id="eemail" type="email" placeholder="name@voltgrid.com" />
+          <div class="error-msg"></div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label for="ephone">Mobile</label>
+            <input id="ephone" type="tel" placeholder="10-digit mobile" maxlength="10" />
+            <div class="error-msg"></div>
+          </div>
+          <div class="field">
+            <label for="edept">Department</label>
+            <select id="edept">
+              <option>Field Operations</option>
+              <option>Billing Support</option>
+              <option>Metering</option>
+              <option>Line Maintenance</option>
+            </select>
+            <div class="error-msg"></div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="eposition">Position</label>
+          <select id="eposition"></select>
+          <div class="error-msg"></div>
+          <p class="muted" style="font-size:.8rem; margin-top:6px;">Position sets what this person can access — from a field agent's queue up to full grid management.</p>
+        </div>
+        <div class="field">
+          <label for="epassword">Temporary password</label>
+          <input id="epassword" type="text" placeholder="Min 6 characters" />
+          <div class="error-msg"></div>
+        </div>
+        <button id="addBtn" class="btn btn-primary">Add employee</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/chrome.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/admin/employeeManagement.js"></script>
+</body>
+</html>

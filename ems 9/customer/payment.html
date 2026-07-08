@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment — VoltGrid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand"><span class="bolt">⚡</span><span>VoltGrid<small>Customer</small></span></div>
+    <nav>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="viewPayBill.html" class="active">Bills</a>
+      <a href="registerComplaint.html">New complaint</a>
+      <a href="complaintStatus.html">My complaints</a>
+    </nav>
+    <div class="flex">
+      <div class="who"><strong id="whoName"></strong><span id="whoMeta"></span></div>
+      <button id="logoutBtn" class="btn btn-ghost btn-sm">Log out</button>
+    </div>
+  </header>
+
+  <main class="page" style="max-width:760px;">
+    <p class="eyebrow">Checkout</p>
+    <h1>Confirm your payment</h1>
+    <p class="muted mb-2">Review the bill and choose how you'd like to pay.</p>
+
+    <div class="grid cols-2">
+      <div class="glass">
+        <h2 class="mb-2">Bill summary</h2>
+        <div class="bill-summary" id="billSummary"></div>
+      </div>
+
+      <div class="glass">
+        <h2 class="mb-2">Payment method</h2>
+        <div id="alert" class="alert error"></div>
+
+        <div class="method-pick mb-2">
+          <label><input type="radio" name="method" value="Card" checked /><span>💳 Card</span></label>
+          <label><input type="radio" name="method" value="UPI" /><span>📱 UPI</span></label>
+        </div>
+
+        <!-- UPI id is asked here; card details have their own page -->
+        <div class="field" id="upiField" style="display:none;">
+          <label for="upi">UPI ID</label>
+          <input id="upi" type="text" placeholder="name@bank" />
+          <div class="error-msg"></div>
+        </div>
+
+        <button id="proceedBtn" class="btn btn-primary btn-block">Continue</button>
+        <a class="btn btn-ghost btn-block mt-1" href="viewPayBill.html">Cancel</a>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/chrome.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/customer/payment.js"></script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+/* ============================================================
+   landing.css — layout for the entry page only.
+   Reuses the liquid-glass tokens from style.css (same aurora,
+   same emerald palette). Static and calm: no fake account data,
+   no floating animation — just a clear two-panel hero and a
+   portal chooser.
+   ============================================================ */
+
+.lp { width: 100%; margin: 0; padding: 30px clamp(20px, 4vw, 64px) 80px; }
+
+/* ---------- brand row (left-aligned) ---------- */
+.lp-top {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; margin-bottom: clamp(30px, 6vw, 60px);
+}
+.lp-top .status {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 8px 15px; border-radius: 99px;
+  font-size: .8rem; font-weight: 600; color: #1e5b2a;
+  background: var(--grain), linear-gradient(180deg, rgba(255,255,255,.72), rgba(255,255,255,.42));
+  -webkit-backdrop-filter: blur(14px) saturate(1.6); backdrop-filter: blur(14px) saturate(1.6);
+  border: 1px solid rgba(255,255,255,.8);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 8px 20px -12px rgba(21,84,45,.4);
+}
+.lp-top .status .dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #37c26a; box-shadow: 0 0 0 4px rgba(67,160,71,.22);
+}
+
+/* ---------- HERO: two calm columns ---------- */
+.lp-hero {
+  display: grid;
+  grid-template-columns: 1.15fr minmax(420px, 600px);
+  gap: clamp(32px, 6vw, 96px);
+  align-items: center;
+}
+.lp-hero-copy .eyebrow { display: inline-block; }
+.lp-hero-copy h1 {
+  font-size: clamp(2.5rem, 5.4vw, 4rem);
+  line-height: 1.04;
+  margin: 14px 0 0;
+  letter-spacing: -.03em;
+}
+.lp-hero-copy h1 .spark {
+  background: linear-gradient(100deg, #43a047, #26a69a 55%, #66bb6a);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.lp-hero-copy p.lead {
+  max-width: 468px; margin-top: 22px;
+  color: var(--ink-soft); font-size: 1.06rem; line-height: 1.65;
+}
+.lp-cta-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 30px; }
+.lp-cta-row .btn { padding: 14px 26px; }
+
+/* feature readouts (static, honest) */
+.lp-readouts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+.lp-readouts span {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: .82rem; font-weight: 600; color: var(--ink-soft);
+  padding: 7px 14px; border-radius: 99px;
+  background: rgba(255,255,255,.5);
+  border: 1px solid rgba(255,255,255,.75);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+}
+.lp-readouts span b { color: #1e5b2a; font-weight: 700; }
+.lp-readouts span::before {
+  content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-hi);
+}
+
+/* ---------- HERO right: animated smart-meter card ---------- */
+.lp-meter { padding: 26px 28px; }
+.lp-meter-top {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;
+}
+.lp-meter-top .tag {
+  font-family: var(--font-display); font-weight: 700; font-size: 1.02rem; color: #164024;
+}
+.lp-meter-top .conn {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: .76rem; font-weight: 700; color: #1e7a3a;
+}
+.lp-meter-top .conn i {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #37c26a; box-shadow: 0 0 0 3px rgba(55,194,106,.2);
+  animation: mpulse 2s ease-in-out infinite;
+}
+@keyframes mpulse { 0%,100% { opacity: 1; } 50% { opacity: .4; } }
+
+.lp-meter-main .k {
+  font-size: .7rem; font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--ink-soft);
+}
+.lp-meter-main .big {
+  font-family: var(--font-display); font-weight: 700; font-size: 3rem; line-height: 1.04;
+  margin-top: 6px; font-variant-numeric: tabular-nums;
+  background: linear-gradient(120deg, #14471f, #2e7d32 55%, #43a047);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.lp-meter-main .big small { font-size: 1.05rem; font-weight: 700; -webkit-text-fill-color: var(--ink-soft); color: var(--ink-soft); }
+
+/* live "today's usage" bars */
+.lp-bars { display: flex; align-items: flex-end; gap: 4px; height: 54px; margin: 18px 0 2px; }
+.lp-bars i {
+  flex: 1; border-radius: 4px 4px 2px 2px;
+  background: linear-gradient(180deg, #66c46d, #2e7d32); opacity: .8;
+  transition: height .6s cubic-bezier(.2,.8,.2,1);
+}
+.lp-bars i:last-child {
+  background: linear-gradient(180deg, #7ee085, #43a047);
+  box-shadow: 0 0 10px rgba(67,160,71,.55); opacity: 1;
+}
+
+.lp-meter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+.lp-meter-grid .cell {
+  padding: 14px 15px; border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,.26));
+  border: 1px solid rgba(255,255,255,.7);
+}
+.lp-meter-grid .ck {
+  font-size: .66rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink-soft);
+}
+.lp-meter-grid .cv {
+  font-family: var(--font-display); font-weight: 700; font-size: 1.35rem;
+  color: #164024; margin-top: 4px; font-variant-numeric: tabular-nums;
+}
+.lp-meter-grid .cv small { font-size: .78rem; color: var(--ink-soft); font-weight: 600; }
+
+/* not clickable — no hover reaction */
+.lp-meter:hover { transform: none; box-shadow: var(--glass-shadow); }
+
+/* ---------- PORTAL CHOOSER ---------- */
+.lp-portals { margin-top: clamp(52px, 8vw, 92px); }
+.lp-portals-head {
+  display: flex; align-items: baseline; gap: 14px; margin-bottom: 22px;
+}
+.lp-portals-head h2 { font-size: 1.35rem; color: #164024; }
+.lp-portals-head span { font-size: .9rem; color: var(--ink-soft); }
+.lp-portals-head .rule {
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, rgba(46,125,50,.28), transparent);
+}
+
+.lp-doors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+.lp-door {
+  display: block; position: relative; overflow: hidden;
+  padding: 26px 26px 24px 30px;
+}
+.lp-door::before {                     /* vertical rail */
+  content: ""; position: absolute; left: 0; top: 18px; bottom: 18px;
+  width: 4px; border-radius: 99px; background: var(--accent);
+  transition: top .3s, bottom .3s;
+}
+.lp-door:hover::before { top: 8px; bottom: 8px; }
+.lp-door:nth-child(2)::before { background: var(--accent-hi); }
+.lp-door:nth-child(3)::before { background: #1b5e20; }
+
+.lp-door .icon {
+  display: grid; place-items: center; width: 52px; height: 52px;
+  font-size: 1.4rem; border-radius: 16px; margin-bottom: 16px;
+  background: linear-gradient(160deg, rgba(255,255,255,.95), rgba(220,244,224,.7));
+  border: 1px solid rgba(255,255,255,.95);
+  box-shadow: 0 12px 24px -12px rgba(21,84,45,.4), inset 0 2px 0 rgba(255,255,255,1);
+  transition: transform .3s cubic-bezier(.2,.8,.2,1);
+}
+.lp-door:hover .icon { transform: translateY(-3px); }
+.lp-door h3 { font-size: 1.15rem; color: #164024; }
+.lp-door p { color: var(--ink-soft); font-size: .9rem; margin: 8px 0 18px; line-height: 1.55; }
+.lp-door .enter {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-weight: 700; font-size: .9rem; color: var(--accent);
+}
+.lp-door .enter .arrow { transition: transform .28s cubic-bezier(.2,.8,.2,1); }
+.lp-door:hover { transform: translateY(-4px); }
+.lp-door:hover .enter { color: var(--accent-hi); }
+.lp-door:hover .enter .arrow { transform: translateX(6px); }
+
+/* ---------- footer credentials ---------- */
+.lp-foot { margin-top: 44px; text-align: center; font-size: .86rem; color: var(--ink-soft); }
+.lp-foot code {
+  font-family: var(--font-body); font-weight: 600; color: #1e5b2a;
+  background: rgba(255,255,255,.55); padding: 2px 8px; border-radius: 7px;
+  border: 1px solid rgba(255,255,255,.7);
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 900px) {
+  .lp-hero { grid-template-columns: 1fr; gap: 40px; }
+  .lp-meter { max-width: 480px; }
+  .lp-doors { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .lp-top .status { display: none; }
+}
+
+/* Two-portal layout (customer + employee) */
+.lp-doors-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+}
+@media (max-width: 640px) {
+  .lp-doors-2 { grid-template-columns: 1fr; }
+}

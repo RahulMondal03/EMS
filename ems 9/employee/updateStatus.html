@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Update status — VoltGrid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand"><span class="bolt">⚡</span><span>VoltGrid<small>Staff console</small></span></div>
+    <nav id="vg-nav" data-active="work"></nav>
+    <div class="flex">
+      <div class="who"><strong id="whoName"></strong><span id="whoMeta"></span></div>
+      <button id="logoutBtn" class="btn btn-ghost btn-sm">Log out</button>
+    </div>
+  </header>
+
+  <main class="page" style="max-width:560px;">
+    <p class="eyebrow">Complaint</p>
+    <h1 id="title">Update status</h1>
+    <p class="muted mb-2" id="subtitle"></p>
+
+    <div class="glass">
+      <div id="alert" class="alert success"></div>
+
+      <div class="field">
+        <label for="status">New status</label>
+        <select id="status">
+          <option>In Progress</option>
+          <option>Resolved</option>
+        </select>
+        <div class="error-msg"></div>
+      </div>
+
+      <div class="field">
+        <label for="note">Work note (visible to the customer)</label>
+        <textarea id="note" placeholder="What was checked, fixed or scheduled?"></textarea>
+        <div class="error-msg"></div>
+      </div>
+
+      <div class="flex">
+        <button id="saveBtn" class="btn btn-primary">Save update</button>
+        <a id="backLink" class="btn btn-ghost" href="dashboard.html">Back</a>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/chrome.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/employee/updateStatus.js"></script>
+</body>
+</html>

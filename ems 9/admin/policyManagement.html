@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Policy management — VoltGrid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand"><span class="bolt">⚡</span><span>VoltGrid<small>Staff console</small></span></div>
+    <nav id="vg-nav" data-active="policies"></nav>
+    <div class="flex">
+      <div class="who"><strong id="whoName"></strong><span id="whoMeta"></span></div>
+      <button id="logoutBtn" class="btn btn-ghost btn-sm">Log out</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <p class="eyebrow">Tariffs</p>
+    <h1>Policy management</h1>
+    <p class="muted mb-2">Create, edit and retire tariff policies.</p>
+
+    <div class="grid cols-2" style="grid-template-columns: 1.4fr 1fr; align-items:start;">
+      <div class="glass">
+        <h2 class="mb-2">Current policies</h2>
+        <div class="table-wrap">
+          <table class="glass-table">
+            <thead><tr><th>Policy</th><th>Rate / unit</th><th></th></tr></thead>
+            <tbody id="policyRows"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="glass">
+        <h2 class="mb-2" id="formTitle">Add a policy</h2>
+        <div id="alert" class="alert success"></div>
+        <input type="hidden" id="policyId" />
+        <div class="field">
+          <label for="pname">Policy name</label>
+          <input id="pname" type="text" placeholder="e.g. Domestic — Slab C" />
+          <div class="error-msg"></div>
+        </div>
+        <div class="field">
+          <label for="prate">Rate per unit (₹)</label>
+          <input id="prate" type="number" step="0.01" min="0" placeholder="6.25" />
+          <div class="error-msg"></div>
+        </div>
+        <div class="field">
+          <label for="pdesc">Description</label>
+          <textarea id="pdesc" placeholder="Who does this tariff apply to?"></textarea>
+          <div class="error-msg"></div>
+        </div>
+        <div class="flex">
+          <button id="saveBtn" class="btn btn-primary">Save policy</button>
+          <button id="cancelBtn" class="btn btn-ghost" style="display:none;">Cancel edit</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/chrome.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/admin/policyManagement.js"></script>
+</body>
+</html>

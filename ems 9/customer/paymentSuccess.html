@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment successful — VoltGrid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+</head>
+<body>
+  <div class="auth-shell">
+    <div class="glass auth-card center" style="width:min(460px,100%);">
+      <div class="success-check">✓</div>
+      <h1>Payment successful</h1>
+      <p class="sub muted">Your electricity bill has been settled.</p>
+
+      <div class="bill-summary" id="receipt" style="text-align:left;"></div>
+
+      <a class="btn btn-primary btn-block mt-3" href="dashboard.html">Back to dashboard</a>
+      <a class="btn btn-ghost btn-block mt-1" href="viewPayBill.html">View all bills</a>
+    </div>
+  </div>
+
+  <!-- paymentSuccess reuses payment.js, which renders the receipt on this page -->
+  <script src="../js/data.js"></script>
+  <script src="../js/chrome.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/customer/payment.js"></script>
+</body>
+</html>

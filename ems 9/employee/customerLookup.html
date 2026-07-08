@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Customer lookup — VoltGrid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand"><span class="bolt">⚡</span><span>VoltGrid<small>Staff console</small></span></div>
+    <nav id="vg-nav" data-active="lookup"></nav>
+    <div class="flex">
+      <div class="who"><strong id="whoName"></strong><span id="whoMeta"></span></div>
+      <button id="logoutBtn" class="btn btn-ghost btn-sm">Log out</button>
+    </div>
+  </header>
+
+  <main class="page" style="max-width:860px;">
+    <p class="eyebrow">Directory</p>
+    <h1>Customer lookup</h1>
+    <p class="muted mb-2">Search by name, email or meter number to see account and billing history.</p>
+
+    <div class="glass mb-2">
+      <div class="field" style="margin-bottom:0;">
+        <label for="search">Search</label>
+        <input id="search" type="text" placeholder="e.g. MTR-58291 or anita@example.com" />
+      </div>
+    </div>
+
+    <div id="results" class="grid"></div>
+  </main>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/chrome.js"></script>
+  <script src="../js/employee/customerLookup.js"></script>
+</body>
+</html>

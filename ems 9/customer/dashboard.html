@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My dashboard — VoltGrid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand"><span class="bolt">⚡</span><span>VoltGrid<small>Customer</small></span></div>
+    <nav>
+      <a href="dashboard.html" class="active">Dashboard</a>
+      <a href="viewPayBill.html">Bills</a>
+      <a href="registerComplaint.html">New complaint</a>
+      <a href="complaintStatus.html">My complaints</a>
+    </nav>
+    <div class="flex">
+      <div class="who"><strong id="whoName"></strong><span id="whoMeta"></span></div>
+      <button id="logoutBtn" class="btn btn-ghost btn-sm">Log out</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <p class="eyebrow">Overview</p>
+    <h1 id="greeting">Hello</h1>
+    <p class="muted mb-2">Here's where your account stands today.</p>
+
+    <section class="grid cols-3">
+      <div class="glass stat">
+        <div class="label">Amount due</div>
+        <div class="value" id="statDue">—</div>
+        <div class="trend" id="statDueNote"></div>
+      </div>
+      <div class="glass stat">
+        <div class="label">Latest usage</div>
+        <div class="value" id="statUnits">— <small>units</small></div>
+        <div class="trend" id="statUnitsNote"></div>
+      </div>
+      <div class="glass stat">
+        <div class="label">Open complaints</div>
+        <div class="value" id="statComplaints">—</div>
+        <div class="trend" id="statComplaintsNote"></div>
+      </div>
+    </section>
+
+    <section class="grid cols-2 mt-3">
+      <div class="glass">
+        <div class="card-head">
+          <h2>Recent bills</h2>
+          <a class="btn btn-ghost btn-sm" href="viewPayBill.html">View all</a>
+        </div>
+        <div class="table-wrap">
+          <table class="glass-table">
+            <thead><tr><th>Month</th><th>Units</th><th>Amount</th><th>Status</th></tr></thead>
+            <tbody id="billRows"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="glass">
+        <div class="card-head">
+          <h2>Recent complaints</h2>
+          <a class="btn btn-ghost btn-sm" href="registerComplaint.html">Raise new</a>
+        </div>
+        <div class="table-wrap">
+          <table class="glass-table">
+            <thead><tr><th>ID</th><th>Type</th><th>Status</th></tr></thead>
+            <tbody id="complaintRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/chrome.js"></script>
+  <script src="../js/customer/dashboard.js"></script>
+</body>
+</html>

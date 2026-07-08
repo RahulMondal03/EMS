@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Employee dashboard — VoltGrid</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="brand"><span class="bolt">⚡</span><span>VoltGrid<small>Staff console</small></span></div>
+    <nav id="vg-nav" data-active="work"></nav>
+    <div class="flex">
+      <div class="who"><strong id="whoName"></strong><span id="whoMeta"></span></div>
+      <button id="logoutBtn" class="btn btn-ghost btn-sm">Log out</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <p class="eyebrow">Workbench</p>
+    <h1 id="greeting">Hello</h1>
+    <p class="muted mb-2">Complaints assigned to you, newest first.</p>
+
+    <section class="grid cols-3">
+      <div class="glass stat"><div class="label">Assigned to me</div><div class="value" id="statAssigned">—</div></div>
+      <div class="glass stat"><div class="label">In progress</div><div class="value" id="statProgress">—</div></div>
+      <div class="glass stat"><div class="label">Resolved by me</div><div class="value" id="statResolved">—</div></div>
+    </section>
+
+    <section class="glass mt-3">
+      <h2 class="mb-2">My complaint queue</h2>
+      <div class="table-wrap">
+        <table class="glass-table">
+          <thead><tr><th>ID</th><th>Customer</th><th>Type</th><th>Raised</th><th>Status</th><th></th></tr></thead>
+          <tbody id="queueRows"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/chrome.js"></script>
+  <script src="../js/employee/dashboard.js"></script>
+</body>
+</html>
