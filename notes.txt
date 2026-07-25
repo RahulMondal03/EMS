@@ -1,0 +1,4 @@
+Notes
+=====
+1. This is the second generated file.
+2. Its content is different from greeting.txt.
