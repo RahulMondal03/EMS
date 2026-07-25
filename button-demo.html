@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Button Demo</title>
+<style>
+  :root {
+    --bg: #f7f8f7;
+    --surface: #ffffff;
+    --ink: #1c2422;
+    --muted: #5b6b66;
+    --accent: #0f766e;
+    --accent-ink: #ffffff;
+    --border: #dde4e1;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #131a18;
+      --surface: #1b2422;
+      --ink: #e8eeec;
+      --muted: #93a5a0;
+      --accent: #2dd4bf;
+      --accent-ink: #0c1513;
+      --border: #2c3835;
+    }
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: ui-sans-serif, system-ui, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 2.5rem;
+    max-width: 24rem;
+    margin: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-wrap: balance;
+  }
+
+  p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  button {
+    align-self: center;
+    margin-top: 0.5rem;
+    padding: 0.7rem 1.8rem;
+    font: inherit;
+    font-weight: 600;
+    color: var(--accent-ink);
+    background: var(--accent);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 120ms ease, opacity 120ms ease;
+  }
+  button:hover { opacity: 0.9; }
+  button:active { transform: scale(0.97); }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) {
+    button { transition: none; }
+  }
+
+  .count {
+    font-variant-numeric: tabular-nums;
+    font-size: 0.9rem;
+    color: var(--muted);
+    min-height: 1.4em;
+  }
+</style>
+</head>
+<body>
+<main class="card">
+  <span class="eyebrow">Demo</span>
+  <h1>A simple button</h1>
+  <p>Companion to <code>create_files.py</code>, which generates two text files. This page has one job: the button below.</p>
+  <button id="btn" type="button">Click me</button>
+  <div class="count" id="count" aria-live="polite"></div>
+</main>
+
+<script>
+  let clicks = 0;
+  const btn = document.getElementById("btn");
+  const count = document.getElementById("count");
+  btn.addEventListener("click", () => {
+    clicks += 1;
+    count.textContent = clicks === 1 ? "Clicked once" : `Clicked ${clicks} times`;
+  });
+</script>
+</body>
+</html>
