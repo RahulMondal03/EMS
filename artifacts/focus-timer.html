@@ -1,0 +1,261 @@
+<title>Focus Timer</title>
+<style>
+  :root {
+    --paper: #F5F2EC;
+    --card: #FFFFFF;
+    --ink: #1C1E1D;
+    --muted: #5B6A67;
+    --hair: #E3DED4;
+    --track: #E7E2D8;
+    --accent: #C65A3A;
+    --accent-soft: #E4A78E;
+    --shadow: 24px 40px 80px -48px rgba(28, 30, 29, 0.45);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #16191A;
+      --card: #1F2426;
+      --ink: #ECE7DD;
+      --muted: #9AA8A4;
+      --hair: #2C3335;
+      --track: #2C3335;
+      --accent: #E0714E;
+      --accent-soft: #7A4433;
+      --shadow: 24px 44px 90px -50px rgba(0, 0, 0, 0.7);
+    }
+  }
+  :root[data-theme="light"] {
+    --paper: #F5F2EC; --card: #FFFFFF; --ink: #1C1E1D; --muted: #5B6A67;
+    --hair: #E3DED4; --track: #E7E2D8; --accent: #C65A3A; --accent-soft: #E4A78E;
+    --shadow: 24px 40px 80px -48px rgba(28, 30, 29, 0.45);
+  }
+  :root[data-theme="dark"] {
+    --paper: #16191A; --card: #1F2426; --ink: #ECE7DD; --muted: #9AA8A4;
+    --hair: #2C3335; --track: #2C3335; --accent: #E0714E; --accent-soft: #7A4433;
+    --shadow: 24px 44px 90px -50px rgba(0, 0, 0, 0.7);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 32px;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    transition: background 0.4s ease, color 0.4s ease;
+  }
+
+  .card {
+    width: min(420px, 100%);
+    background: var(--card);
+    border: 1px solid var(--hair);
+    border-radius: 20px;
+    padding: 40px 40px 36px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .eyebrow {
+    margin: 0;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .dial { position: relative; width: 220px; height: 220px; }
+  .dial svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .dial circle { fill: none; stroke-width: 10; stroke-linecap: round; }
+  .track { stroke: var(--track); }
+  .progress {
+    stroke: var(--accent);
+    transition: stroke-dashoffset 0.95s linear;
+  }
+
+  .readout {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    text-align: center;
+  }
+  .time {
+    font-size: 3.4rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .state {
+    margin-top: 8px;
+    font-size: 0.75rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .presets { display: flex; gap: 8px; }
+  .preset {
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 1px solid var(--hair);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+  }
+  .preset:hover { color: var(--ink); border-color: var(--muted); }
+  .preset[aria-pressed="true"] {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+
+  .controls { display: flex; gap: 12px; width: 100%; }
+  .btn {
+    flex: 1;
+    font: inherit;
+    font-weight: 600;
+    padding: 13px 0;
+    border-radius: 12px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: transform 0.08s ease, opacity 0.2s, background 0.2s, border-color 0.2s;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn.primary { background: var(--accent); color: #fff; }
+  .btn.primary:hover { opacity: 0.92; }
+  .btn.ghost { background: transparent; color: var(--muted); border-color: var(--hair); }
+  .btn.ghost:hover { color: var(--ink); border-color: var(--muted); }
+
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+
+<main class="card">
+  <p class="eyebrow">Focus Session</p>
+
+  <div class="dial">
+    <svg viewBox="0 0 220 220" aria-hidden="true">
+      <circle class="track" cx="110" cy="110" r="100"></circle>
+      <circle class="progress" id="ring" cx="110" cy="110" r="100"></circle>
+    </svg>
+    <div class="readout">
+      <div>
+        <div class="time" id="time" role="timer" aria-live="off">25:00</div>
+        <div class="state" id="state">Ready</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="presets" role="group" aria-label="Session length">
+    <button class="preset" data-min="15">15 min</button>
+    <button class="preset" data-min="25" aria-pressed="true">25 min</button>
+    <button class="preset" data-min="50">50 min</button>
+  </div>
+
+  <div class="controls">
+    <button class="btn primary" id="toggle">Start</button>
+    <button class="btn ghost" id="reset">Reset</button>
+  </div>
+</main>
+
+<script>
+  const RADIUS = 100;
+  const CIRC = 2 * Math.PI * RADIUS;
+  const ring = document.getElementById('ring');
+  const timeEl = document.getElementById('time');
+  const stateEl = document.getElementById('state');
+  const toggleBtn = document.getElementById('toggle');
+  const resetBtn = document.getElementById('reset');
+  const presets = [...document.querySelectorAll('.preset')];
+
+  ring.style.strokeDasharray = CIRC;
+
+  let total = 25 * 60;
+  let remaining = total;
+  let running = false;
+  let ticker = null;
+
+  function fmt(s) {
+    const m = Math.floor(s / 60);
+    const sec = s % 60;
+    return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+  }
+
+  function render() {
+    timeEl.textContent = fmt(remaining);
+    const done = (total - remaining) / total;
+    ring.style.strokeDashoffset = CIRC * (1 - done);
+  }
+
+  function setState(label) { stateEl.textContent = label; }
+
+  function stop() {
+    clearInterval(ticker);
+    ticker = null;
+    running = false;
+    toggleBtn.textContent = remaining === 0 ? 'Start' : 'Resume';
+  }
+
+  function tick() {
+    remaining = Math.max(0, remaining - 1);
+    render();
+    if (remaining === 0) {
+      stop();
+      setState('Done');
+      toggleBtn.textContent = 'Start';
+    }
+  }
+
+  function start() {
+    if (remaining === 0) remaining = total;
+    running = true;
+    setState('Focusing');
+    toggleBtn.textContent = 'Pause';
+    ticker = setInterval(tick, 1000);
+  }
+
+  toggleBtn.addEventListener('click', () => {
+    if (running) { stop(); setState('Paused'); }
+    else start();
+  });
+
+  resetBtn.addEventListener('click', () => {
+    stop();
+    remaining = total;
+    setState('Ready');
+    toggleBtn.textContent = 'Start';
+    render();
+  });
+
+  presets.forEach(btn => {
+    btn.addEventListener('click', () => {
+      presets.forEach(b => b.setAttribute('aria-pressed', 'false'));
+      btn.setAttribute('aria-pressed', 'true');
+      total = Number(btn.dataset.min) * 60;
+      stop();
+      remaining = total;
+      setState('Ready');
+      toggleBtn.textContent = 'Start';
+      render();
+    });
+  });
+
+  render();
+</script>
