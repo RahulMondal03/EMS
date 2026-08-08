@@ -1,0 +1,392 @@
+<title>The Moon — a short field guide</title>
+
+<style>
+  :root {
+    --ground:   #EDEFF3;
+    --surface:  #F8F9FB;
+    --text:     #1B1E26;
+    --muted:    #5C6376;
+    --accent:   #8A6733;
+    --hairline: #D6DAE3;
+
+    --serif: "Hoefler Text", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+
+    --step--1: 0.8125rem;
+    --step-0:  1.0625rem;
+    --step-1:  1.375rem;
+    --step-2:  1.875rem;
+    --step-3:  clamp(2.25rem, 6vw, 3.25rem);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:   #0A0C12;
+      --surface:  #12151E;
+      --text:     #E4E2DA;
+      --muted:    #8B90A2;
+      --accent:   #D8B676;
+      --hairline: #232838;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:   #0A0C12;
+    --surface:  #12151E;
+    --text:     #E4E2DA;
+    --muted:    #8B90A2;
+    --accent:   #D8B676;
+    --hairline: #232838;
+  }
+
+  body {
+    background: var(--ground);
+    color: var(--text);
+    font-family: var(--serif);
+    font-size: var(--step-0);
+    line-height: 1.65;
+    margin: 0;
+    padding: clamp(1.75rem, 5vw, 4.5rem) 1.25rem 4rem;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  main {
+    max-width: 62ch;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 3.25rem;
+  }
+
+  h1, h2 { text-wrap: balance; font-weight: 600; margin: 0; }
+
+  a {
+    color: var(--accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  /* ── Masthead ─────────────────────────────────────── */
+
+  .masthead {
+    display: grid;
+    grid-template-columns: 148px 1fr;
+    gap: clamp(1.25rem, 4vw, 2.25rem);
+    align-items: center;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  @media (max-width: 34rem) {
+    .masthead { grid-template-columns: 1fr; }
+  }
+
+  /* Disc: sunlit limb upper-left, terminator falling away to lower-right.
+     The mottling is the nearside maria, roughly placed. */
+  .disc {
+    width: 148px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 62% 24%, rgba(70, 72, 82, 0.30) 0 7%, transparent 7.5%),
+      radial-gradient(ellipse at 40% 33%, rgba(74, 76, 88, 0.34) 0 15%, transparent 16%),
+      radial-gradient(ellipse at 30% 52%, rgba(78, 80, 92, 0.30) 0 13%, transparent 14%),
+      radial-gradient(circle at 55% 62%, rgba(70, 72, 82, 0.26) 0 10%, transparent 11%),
+      radial-gradient(circle at 74% 47%, rgba(72, 74, 86, 0.22) 0 6%, transparent 7%),
+      radial-gradient(circle at 46% 78%, rgba(96, 96, 104, 0.20) 0 8%, transparent 9%),
+      radial-gradient(circle at 33% 27%, #F4F1E7 0, #D2CDBF 42%, #97938A 74%, #55555E 92%, #3A3A44 100%);
+    box-shadow:
+      inset -20px -16px 42px rgba(8, 10, 16, 0.55),
+      inset 2px 2px 6px rgba(255, 253, 244, 0.35),
+      0 0 70px -14px rgba(216, 222, 240, 0.35);
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 0.6rem;
+  }
+
+  h1 {
+    font-size: var(--step-3);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+  }
+
+  .dek {
+    margin: 0.85rem 0 0;
+    color: var(--muted);
+    font-size: var(--step-0);
+  }
+
+  /* ── Sections ─────────────────────────────────────── */
+
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+
+  h2 {
+    font-size: var(--step-1);
+    letter-spacing: -0.01em;
+  }
+
+  h2 + p, p { margin: 0; }
+
+  section > p + p { margin-top: -0.35rem; }
+
+  /* ── Phase cycle ──────────────────────────────────── */
+
+  .cycle {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem 1rem;
+  }
+
+  @media (max-width: 30rem) {
+    .cycle { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .cycle li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.5rem;
+  }
+
+  .cycle svg {
+    width: 52px;
+    height: 52px;
+    display: block;
+  }
+
+  .cycle .lit  { fill: #E9E4D6; }
+  .cycle .dark { fill: var(--hairline); }
+  .cycle .rim  { fill: none; stroke: var(--hairline); stroke-width: 1; }
+  .waning svg  { transform: scaleX(-1); }
+
+  .phase-name {
+    font-size: var(--step--1);
+    line-height: 1.35;
+  }
+
+  .day {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Figures ──────────────────────────────────────── */
+
+  .figures {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+
+  caption {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: var(--step--1);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-bottom: 0.75rem;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 0.6rem 0.75rem 0.6rem 0;
+    border-bottom: 1px solid var(--hairline);
+    vertical-align: baseline;
+  }
+
+  th {
+    font-weight: 400;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  td {
+    font-family: var(--mono);
+    font-size: 0.9375rem;
+    text-align: right;
+    padding-right: 0;
+    white-space: nowrap;
+  }
+
+  tr:last-child th, tr:last-child td { border-bottom: none; }
+
+  /* ── Maria ────────────────────────────────────────── */
+
+  .maria {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .maria li {
+    display: grid;
+    grid-template-columns: 15ch 1fr;
+    gap: 0.35rem 1.25rem;
+    padding-bottom: 0.85rem;
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .maria li:last-child { border-bottom: none; padding-bottom: 0; }
+
+  @media (max-width: 30rem) {
+    .maria li { grid-template-columns: 1fr; }
+  }
+
+  .latin { font-style: italic; }
+
+  .gloss { color: var(--muted); font-size: var(--step--1); }
+
+  /* ── Footer ───────────────────────────────────────── */
+
+  footer {
+    border-top: 1px solid var(--hairline);
+    padding-top: 1.5rem;
+    color: var(--muted);
+    font-size: var(--step--1);
+  }
+
+  footer p { margin: 0; }
+</style>
+
+<main>
+
+  <header class="masthead">
+    <div class="disc" role="img" aria-label="The Moon's nearside, lit from the upper left, with the dark maria visible as grey patches."></div>
+    <div>
+      <p class="eyebrow">Earth · Satellite I</p>
+      <h1>The Moon</h1>
+      <p class="dek">One rock, 384,400 kilometres away, locked so that we only ever see one side of it. Here is what it measures, how it changes shape, and what the dark patches are.</p>
+    </div>
+  </header>
+
+  <section>
+    <h2>What it is</h2>
+    <p>The Moon is Earth's only natural satellite and the fifth largest in the solar system — a quarter of Earth's diameter, which makes it unusually big relative to the planet it orbits. It most likely formed about 4.5 billion years ago, when a Mars-sized body struck the young Earth and the debris settled into orbit.</p>
+    <p>It has no meaningful atmosphere, so nothing moderates its temperature and nothing erodes its surface. Footprints left in 1969 are still there, sharp-edged, and the daytime and night-time temperatures differ by roughly 300 °C.</p>
+  </section>
+
+  <section>
+    <h2>The cycle of phases</h2>
+    <p>Phases are not shadows cast by Earth. Half the Moon is always sunlit; what changes is how much of that lit half faces us as the Moon works around its orbit. One full round trip takes 29.5 days.</p>
+    <ol class="cycle">
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle class="dark" cx="12" cy="12" r="12" /><circle class="rim" cx="12" cy="12" r="11.5" /></svg>
+        <span class="phase-name">New</span>
+        <span class="day">Day 0</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle class="dark" cx="12" cy="12" r="12" /><path class="lit" d="M12,0 A12,12 0 0,1 12,24 A6,12 0 0,0 12,0" /></svg>
+        <span class="phase-name">Waxing crescent</span>
+        <span class="day">Day 4</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle class="dark" cx="12" cy="12" r="12" /><path class="lit" d="M12,0 A12,12 0 0,1 12,24 Z" /></svg>
+        <span class="phase-name">First quarter</span>
+        <span class="day">Day 7</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle class="dark" cx="12" cy="12" r="12" /><path class="lit" d="M12,0 A12,12 0 0,1 12,24 A6,12 0 0,1 12,0" /></svg>
+        <span class="phase-name">Waxing gibbous</span>
+        <span class="day">Day 11</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle class="lit" cx="12" cy="12" r="12" /></svg>
+        <span class="phase-name">Full</span>
+        <span class="day">Day 15</span>
+      </li>
+      <li class="waning">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle class="dark" cx="12" cy="12" r="12" /><path class="lit" d="M12,0 A12,12 0 0,1 12,24 A6,12 0 0,1 12,0" /></svg>
+        <span class="phase-name">Waning gibbous</span>
+        <span class="day">Day 18</span>
+      </li>
+      <li class="waning">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle class="dark" cx="12" cy="12" r="12" /><path class="lit" d="M12,0 A12,12 0 0,1 12,24 Z" /></svg>
+        <span class="phase-name">Last quarter</span>
+        <span class="day">Day 22</span>
+      </li>
+      <li class="waning">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle class="dark" cx="12" cy="12" r="12" /><path class="lit" d="M12,0 A12,12 0 0,1 12,24 A6,12 0 0,0 12,0" /></svg>
+        <span class="phase-name">Waning crescent</span>
+        <span class="day">Day 26</span>
+      </li>
+    </ol>
+  </section>
+
+  <section class="figures">
+    <table>
+      <caption>Key figures</caption>
+      <tbody>
+        <tr><th scope="row">Mean distance from Earth</th><td>384,400 km</td></tr>
+        <tr><th scope="row">Diameter</th><td>3,474.8 km</td></tr>
+        <tr><th scope="row">Mass</th><td>0.0123 Earth</td></tr>
+        <tr><th scope="row">Surface gravity</th><td>1.62 m/s²</td></tr>
+        <tr><th scope="row">Orbit around Earth (sidereal)</th><td>27.32 days</td></tr>
+        <tr><th scope="row">New moon to new moon</th><td>29.53 days</td></tr>
+        <tr><th scope="row">Surface temperature</th><td>−173 to 127 °C</td></tr>
+        <tr><th scope="row">Light travel time from Earth</th><td>1.28 s</td></tr>
+        <tr><th scope="row">Estimated age</th><td>4.51 billion yr</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>The dark patches</h2>
+    <p>The grey areas visible without a telescope are <span class="latin">maria</span> — "seas" — named by seventeenth-century astronomers who took them for water. They are basalt plains, ancient impact basins flooded by lava and then frozen, which is why they are darker and smoother than the cratered highlands around them.</p>
+    <ul class="maria">
+      <li>
+        <span class="latin">Mare Tranquillitatis</span>
+        <span class="gloss">Sea of Tranquillity — where Apollo 11 landed on 20 July 1969.</span>
+      </li>
+      <li>
+        <span class="latin">Oceanus Procellarum</span>
+        <span class="gloss">Ocean of Storms — the largest of them, spanning some 2,500 km.</span>
+      </li>
+      <li>
+        <span class="latin">Mare Imbrium</span>
+        <span class="gloss">Sea of Showers — a basin gouged out by an impact roughly 3.9 billion years ago.</span>
+      </li>
+      <li>
+        <span class="latin">Mare Serenitatis</span>
+        <span class="gloss">Sea of Serenity — Apollo 17 worked its south-eastern edge in 1972.</span>
+      </li>
+      <li>
+        <span class="latin">Mare Crisium</span>
+        <span class="gloss">Sea of Crises — an isolated oval near the eastern limb, easy to pick out.</span>
+      </li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>The Moon is drifting away from us at about 3.8 cm a year, measured by bouncing lasers off reflectors the Apollo crews left behind. Tidal friction is slowly handing Earth's rotational energy to the Moon's orbit, and in the same exchange our days are getting longer.</p>
+  </footer>
+
+</main>
