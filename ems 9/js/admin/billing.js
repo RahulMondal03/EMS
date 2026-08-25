@@ -34,12 +34,21 @@ if (session) {
     document.querySelector('input[name="mode"]:checked').value;
 
   /* ---------- Live breakdown ---------- */
+  const esc = (v) => String(v).replace(/[&<>"]/g,
+    (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
   function renderPreview() {
     const b = EMS.computeBill(unitsInput.value, currentMode());
     const lineRows = b.lines.map(l =>
       `<div class="row"><span>${l.label}</span><span>${EMS.money(l.amount)}</span></div>`).join("");
+    /* computeBill hands back anything that was not a whole number of
+       units — say so instead of quietly billing a different figure. */
+    const skipped = b.unitsValid ? "" :
+      `<div class="row"><span class="muted">Not counted — units must be whole numbers: ${
+        b.invalid.map(esc).join(", ")}</span><span></span></div>`;
     preview.innerHTML = `
       ${lineRows}
+      ${skipped}
       <div class="row"><span>Fixed service charge</span><span>${EMS.money(b.serviceCharge)}</span></div>
       <div class="row total"><span>Amount payable</span><span>${EMS.money(b.total)}</span></div>`;
   }
@@ -68,12 +77,13 @@ if (session) {
     const ok = V.validate([
       { id: "customer", checks: [[V.required, "Choose a customer"]] },
       { id: "month",    checks: [[V.required, "Billing month is required"]] },
-      { id: "units",    checks: [[V.required, "Enter the units consumed"], [V.number, "Units must be a number"]] },
+      { id: "units",    checks: [[V.required, "Enter the units consumed"],
+                                 [V.integerList, "Units must be whole numbers — kWh is metered in units"]] },
       { id: "due",      checks: [[V.required, "Set a due date"]] },
     ]);
     if (!ok) return;
 
-    if (Number(unitsInput.value) < 0) {
+    if (EMS.sumIntegers(unitsInput.value) < 0) {
       V.setError(unitsInput, "Units cannot be negative");
       return;
     }
@@ -82,7 +92,7 @@ if (session) {
     const bill = EMS.addBill({
       customerId: customerSel.value,
       month: monthInput.value.trim(),
-      units: Number(unitsInput.value),
+      units: EMS.sumIntegers(unitsInput.value),
       amount: b.total,
       dueDate: dueInput.value,
     });

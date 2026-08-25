@@ -125,6 +125,39 @@ const EMS = (() => {
 
   const money = (n) => "₹" + Number(n).toFixed(2);
 
+  /* ---------- Integer-list helpers ----------
+     Numbers reach the store from form fields, from older records and
+     from hand-edited localStorage, so a "list of units" is not
+     guaranteed to hold whole numbers. validateIntegerList() sorts a
+     list into the entries that really are integers and the ones that
+     are not, so callers can reject or report the bad entries instead
+     of letting a "1.5" or an "abc" turn a total into NaN.
+     Accepts an array or a single string of separated values:
+       validateIntegerList("120, 60, x")
+         -> { ok: false, integers: [120, 60], invalid: ["x"] }        */
+  const listEntries = (values) => {
+    if (Array.isArray(values)) return values;
+    if (values === null || values === undefined) return [];
+    return String(values).split(/[\s,;]+/).filter((s) => s !== "");
+  };
+
+  function validateIntegerList(values) {
+    const integers = [];
+    const invalid  = [];
+    listEntries(values).forEach((v) => {
+      const raw = typeof v === "number" ? v : String(v).trim();
+      const n   = typeof raw === "number" ? raw : Number(raw);
+      if (raw === "" || !Number.isInteger(n)) invalid.push(v);
+      else integers.push(n);
+    });
+    return { ok: invalid.length === 0, integers, invalid };
+  }
+
+  /* Total of the whole numbers in a list. Non-integer entries are left
+     out rather than poisoning the sum with NaN. */
+  const sumIntegers = (values) =>
+    validateIntegerList(values).integers.reduce((a, b) => a + b, 0);
+
   const nextId = (kind, prefix) => {
     const d = load();
     const id = prefix + d.nextIds[kind];
@@ -287,10 +320,20 @@ const EMS = (() => {
   }
 
   /* Pure calculator: units + mode -> an itemised breakdown.
-     Returns { units, mode, lines:[{label,amount}], energy,
-               serviceCharge, total, rates }.                       */
+     `units` may be a single value or a list of meter readings, either
+     as an array ([120, 60]) or as one separated string ("120, 60").
+     Every reading has to be a whole number of units: fractions, blanks,
+     text and negative readings are refused, reported back in `invalid`
+     and left out of the total instead of skewing the bill.
+     Returns { units, readings, invalid, unitsValid, mode,
+               lines:[{label,amount}], energy, serviceCharge, total,
+               rates }.                                             */
   function computeBill(units, mode) {
-    units = Math.max(0, Number(units) || 0);
+    const checked  = validateIntegerList(units);
+    const readings = checked.integers.filter((n) => n >= 0);
+    const invalid  = checked.invalid.concat(checked.integers.filter((n) => n < 0));
+
+    units = readings.reduce((a, b) => a + b, 0);
     const r = tariffRates();
     const lines = [];
     let energy = 0;
@@ -315,13 +358,21 @@ const EMS = (() => {
     }
 
     const total = energy + SERVICE_CHARGE;
-    return { units, mode: mode || "standard", lines, energy,
+    return { units, readings, invalid, unitsValid: invalid.length === 0,
+             mode: mode || "standard", lines, energy,
              serviceCharge: SERVICE_CHARGE, total: Math.round(total * 100) / 100, rates: r };
   }
 
   /* Create a bill for a customer. Pass { customerId, month, units,
      amount, dueDate }; id and Unpaid status are filled in here.     */
   function addBill(bill) {
+    /* Last line of defence: a bill is metered in whole units, so refuse
+       anything a form (or a caller) let through as a fraction or text. */
+    const checked = validateIntegerList([bill.units]);
+    if (!checked.ok || checked.integers[0] < 0)
+      throw new TypeError("addBill: units must be a whole number, got " + JSON.stringify(bill.units));
+    bill.units = checked.integers[0];
+
     const d = load();
     bill.id = "B" + d.nextIds.bill;
     bill.status = bill.status || "Unpaid";
@@ -399,6 +450,7 @@ const EMS = (() => {
   /* ---------- Public API ---------- */
   return {
     resetDemo, now, money, badgeClass,
+    validateIntegerList, sumIntegers,
     setSession, getSession, logout, requireRole, requireEmployee, requirePerm,
     loginCustomer, loginEmployee,
     getCustomers, findCustomer, customerByMail, addCustomer, removeCustomer,

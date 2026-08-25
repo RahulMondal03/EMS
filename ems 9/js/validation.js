@@ -13,6 +13,21 @@ const V = (() => {
   const minLen   = (n) => (v) => v.trim().length >= n;
   const number   = (v) => v.trim() !== "" && !isNaN(Number(v));
   const positive = (v) => number(v) && Number(v) > 0;
+  const integer  = (v) => number(v) && Number.isInteger(Number(v));   // rejects "1.5"
+
+  /* ---------- List checks ----------
+     A single field can hold several values separated by commas, spaces
+     or semicolons (e.g. a set of meter readings: "120, 60, 45").
+     listEntries() splits such a field, nonIntegerEntries() names the
+     entries that are not whole numbers, and integerList() is the check
+     to drop into a rule: a non-empty list with no bad entries.      */
+  const listEntries = (v) =>
+    String(v == null ? "" : v).split(/[\s,;]+/).filter((s) => s !== "");
+
+  const nonIntegerEntries = (v) => listEntries(v).filter((s) => !integer(s));
+
+  const integerList = (v) =>
+    listEntries(v).length > 0 && nonIntegerEntries(v).length === 0;
 
   /* Payment-specific checks */
   const cardNumber = (v) => /^\d{16}$/.test(v.replace(/\s/g, ""));
@@ -71,7 +86,8 @@ const V = (() => {
     });
   }
 
-  return { required, email, phone, minLen, number, positive,
+  return { required, email, phone, minLen, number, positive, integer,
+           listEntries, nonIntegerEntries, integerList,
            cardNumber, cvv, upiId, expiry,
            validate, liveClear, setError, clearError };
 })();
