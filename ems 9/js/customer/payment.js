@@ -25,7 +25,7 @@ if (session) {
     } else {
       summary.innerHTML = `
         <div class="row"><span>Bill ID</span><span>${bill.id}</span></div>
-        <div class="row"><span>Billing month</span><span>${bill.month}</span></div>
+        <div class="row"><span>Billing month</span><span>${EMS.esc(bill.month)}</span></div>
         <div class="row"><span>Units consumed</span><span>${bill.units}</span></div>
         <div class="row"><span>Due date</span><span>${bill.dueDate}</span></div>
         <div class="row total"><span>Total payable</span><span>${EMS.money(bill.amount)}</span></div>`;
@@ -69,7 +69,7 @@ if (session) {
       const bill = EMS.findBill(p.billId);
       receipt.innerHTML = `
         <div class="row"><span>Transaction ID</span><span>${p.id}</span></div>
-        <div class="row"><span>Bill</span><span>${bill.id} · ${bill.month}</span></div>
+        <div class="row"><span>Bill</span><span>${bill ? bill.id + " · " + EMS.esc(bill.month) : EMS.esc(p.billId)}</span></div>
         <div class="row"><span>Method</span><span>${p.method}</span></div>
         <div class="row"><span>Paid on</span><span>${p.date}</span></div>
         <div class="row total"><span>Amount paid</span><span>${EMS.money(p.amount)}</span></div>`;

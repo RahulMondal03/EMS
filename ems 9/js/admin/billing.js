@@ -19,7 +19,7 @@ if (session) {
   /* Populate the customer dropdown */
   customerSel.insertAdjacentHTML("beforeend",
     EMS.getCustomers().map(c =>
-      `<option value="${c.id}">${c.name} · ${c.id} · ${c.meterNo}</option>`).join(""));
+      `<option value="${c.id}">${EMS.esc(c.name)} · ${c.id} · ${EMS.esc(c.meterNo)}</option>`).join(""));
 
   /* Default month = current month + year, e.g. "July 2026" */
   const d = new Date();
@@ -52,8 +52,8 @@ if (session) {
       return `
         <tr>
           <td><strong>${b.id}</strong></td>
-          <td>${c ? c.name : b.customerId}</td>
-          <td>${b.month}</td>
+          <td>${c ? EMS.esc(c.name) : b.customerId}</td>
+          <td>${EMS.esc(b.month)}</td>
           <td><strong>${b.units}</strong></td>
           <td><strong>${EMS.money(b.amount)}</strong></td>
           <td>${b.dueDate}</td>

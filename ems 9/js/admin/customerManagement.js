@@ -16,21 +16,21 @@ if (session) {
     rows.innerHTML = list.map(c => `
       <tr>
         <td><strong>${c.id}</strong></td>
-        <td>${c.name}</td>
-        <td>${c.email}</td>
-        <td>${c.phone}</td>
-        <td>${c.meterNo}</td>
-        <td>${c.address}</td>
+        <td>${EMS.esc(c.name)}</td>
+        <td>${EMS.esc(c.email)}</td>
+        <td>${EMS.esc(c.phone)}</td>
+        <td>${EMS.esc(c.meterNo)}</td>
+        <td>${EMS.esc(c.address)}</td>
         <td><button class="btn btn-danger btn-sm" data-del="${c.id}">Remove</button></td>
       </tr>`).join("") ||
-      `<tr class="empty"><td colspan="7">No customers match “${search.value}”.</td></tr>`;
+      `<tr class="empty"><td colspan="7">No customers match “${EMS.esc(search.value)}”.</td></tr>`;
   }
 
   search.addEventListener("input", render);
 
   rows.addEventListener("click", (e) => {
     const btn = e.target.closest("button[data-del]");
-    if (btn && confirm("Remove this customer account?")) {
+    if (btn && confirm("Remove this customer account? Their bills, payments and complaints are deleted too.")) {
       EMS.removeCustomer(btn.dataset.del);
       render();
     }

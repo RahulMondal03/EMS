@@ -37,7 +37,7 @@ if (session) {
   const billRows = document.getElementById("billRows");
   billRows.innerHTML = bills.slice(-3).reverse().map(b => `
     <tr>
-      <td><strong>${b.month}</strong></td>
+      <td><strong>${EMS.esc(b.month)}</strong></td>
       <td>${b.units}</td>
       <td>${EMS.money(b.amount)}</td>
       <td><span class="badge ${EMS.badgeClass(b.status)}">${b.status}</span></td>
@@ -49,7 +49,7 @@ if (session) {
   complaintRows.innerHTML = complaints.slice(-3).reverse().map(k => `
     <tr>
       <td><strong>${k.id}</strong></td>
-      <td>${k.type}</td>
+      <td>${EMS.esc(k.type)}</td>
       <td><span class="badge ${EMS.badgeClass(k.status)}">${k.status}</span></td>
     </tr>`).join("") ||
     `<tr class="empty"><td colspan="3">Nothing raised — hope it stays that way!</td></tr>`;

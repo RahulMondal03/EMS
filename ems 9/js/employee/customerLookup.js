@@ -21,7 +21,7 @@ if (session) {
 
     if (!matches.length) {
       results.innerHTML = `<div class="glass center muted" style="padding:34px;">
-        No customer matches “${search.value}”.</div>`;
+        No customer matches “${EMS.esc(search.value)}”.</div>`;
       return;
     }
 
@@ -33,7 +33,7 @@ if (session) {
 
       const billRows = bills.slice(-4).reverse().map(b => `
         <tr>
-          <td>${b.month}</td><td>${b.units}</td>
+          <td>${EMS.esc(b.month)}</td><td>${b.units}</td>
           <td>${EMS.money(b.amount)}</td>
           <td><span class="badge ${EMS.badgeClass(b.status)}">${b.status}</span></td>
         </tr>`).join("") ||
@@ -41,7 +41,7 @@ if (session) {
 
       const complaintRows = complaints.slice(-4).reverse().map(k => `
         <tr>
-          <td><strong>${k.id}</strong></td><td>${k.type}</td>
+          <td><strong>${k.id}</strong></td><td>${EMS.esc(k.type)}</td>
           <td><span class="badge ${EMS.badgeClass(k.status)}">${k.status}</span></td>
         </tr>`).join("") ||
         `<tr class="empty"><td colspan="3">No complaints.</td></tr>`;
@@ -50,9 +50,9 @@ if (session) {
         <div class="glass">
           <div class="card-head">
             <div>
-              <h2>${c.name} <span class="muted" style="font-size:0.8rem;">${c.id}</span></h2>
-              <p class="muted">${c.email} · ${c.phone} · Meter ${c.meterNo}</p>
-              <p class="muted">${c.address}</p>
+              <h2>${EMS.esc(c.name)} <span class="muted" style="font-size:0.8rem;">${c.id}</span></h2>
+              <p class="muted">${EMS.esc(c.email)} · ${EMS.esc(c.phone)} · Meter ${EMS.esc(c.meterNo)}</p>
+              <p class="muted">${EMS.esc(c.address)}</p>
             </div>
             ${due ? `<span class="badge unpaid">${EMS.money(due)} due</span>`
                   : `<span class="badge paid">No dues</span>`}

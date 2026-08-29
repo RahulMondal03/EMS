@@ -15,8 +15,8 @@ if (session) {
     rows.innerHTML = EMS.getPolicies().map(p => `
       <tr>
         <td>
-          <strong>${p.name}</strong><br />
-          <span class="muted">${p.description}</span>
+          <strong>${EMS.esc(p.name)}</strong><br />
+          <span class="muted">${EMS.esc(p.description)}</span>
         </td>
         <td><strong>${EMS.money(p.ratePerUnit)}</strong></td>
         <td style="white-space:nowrap;">

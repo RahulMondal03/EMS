@@ -18,11 +18,11 @@ if (session) {
       `Raised ${k.createdAt} · <span class="badge ${EMS.badgeClass(k.status)}">${k.status}</span>`;
 
     document.getElementById("detailRows").innerHTML = `
-      <div class="row"><span>Customer</span><span>${customer ? customer.name : k.customerId}</span></div>
-      <div class="row"><span>Phone</span><span>${customer ? customer.phone : "—"}</span></div>
-      <div class="row"><span>Meter no.</span><span>${customer ? customer.meterNo : "—"}</span></div>
-      <div class="row"><span>Address</span><span>${customer ? customer.address : "—"}</span></div>
-      <div class="row"><span>Issue</span><span style="max-width:60%; text-align:right;">${k.description}</span></div>`;
+      <div class="row"><span>Customer</span><span>${customer ? EMS.esc(customer.name) : k.customerId}</span></div>
+      <div class="row"><span>Phone</span><span>${customer ? EMS.esc(customer.phone) : "—"}</span></div>
+      <div class="row"><span>Meter no.</span><span>${customer ? EMS.esc(customer.meterNo) : "—"}</span></div>
+      <div class="row"><span>Address</span><span>${customer ? EMS.esc(customer.address) : "—"}</span></div>
+      <div class="row"><span>Issue</span><span style="max-width:60%; text-align:right;">${EMS.esc(k.description)}</span></div>`;
 
     /* Hide the update button once resolved. */
     const updateLink = document.getElementById("updateLink");
@@ -32,8 +32,8 @@ if (session) {
     document.getElementById("timeline").innerHTML = k.updates.map(u => `
       <li>
         <div class="t-when">${u.at}</div>
-        <div class="t-what">${u.what}</div>
-        ${u.note ? `<div class="t-note">“${u.note}”</div>` : ""}
+        <div class="t-what">${EMS.esc(u.what)}</div>
+        ${u.note ? `<div class="t-note">“${EMS.esc(u.note)}”</div>` : ""}
       </li>`).join("");
   }
 }

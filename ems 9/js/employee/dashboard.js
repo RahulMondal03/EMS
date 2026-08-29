@@ -24,8 +24,8 @@ if (session) {
     return `
       <tr>
         <td><strong>${k.id}</strong></td>
-        <td>${c ? c.name : k.customerId}</td>
-        <td>${k.type}</td>
+        <td>${c ? EMS.esc(c.name) : k.customerId}</td>
+        <td>${EMS.esc(k.type)}</td>
         <td>${k.createdAt}</td>
         <td><span class="badge ${EMS.badgeClass(k.status)}">${k.status}</span></td>
         <td style="white-space:nowrap;">

@@ -14,7 +14,7 @@ if (session) {
   rows.innerHTML = bills.map(b => `
     <tr>
       <td><strong>${b.id}</strong></td>
-      <td>${b.month}</td>
+      <td>${EMS.esc(b.month)}</td>
       <td>${b.units}</td>
       <td><strong>${EMS.money(b.amount)}</strong></td>
       <td>${b.dueDate}</td>

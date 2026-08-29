@@ -7,7 +7,7 @@
 
 const EMS = (() => {
 
-  const STORE_KEY = "ems_data_v2";   // bumped: v1 had no employee positions
+  const STORE_KEY = "ems_data_v3";   // bumped: v2 seed bills ignored the service charge
 
   /* ---------- Roles & positions ----------
      There are only two kinds of account: customers and employees.
@@ -73,11 +73,14 @@ const EMS = (() => {
       ],
 
       bills: [
-        { id: "B9001", customerId: "C1001", month: "May 2026",  units: 182, amount: 819.0,
+        /* Amounts follow the same rule as computeBill(): slab energy
+           charge + the fixed ₹50 service charge. 182u -> 182×4.50+50;
+           214u -> 200×4.50 + 14×6.25 + 50; 158u -> 158×4.50+50. */
+        { id: "B9001", customerId: "C1001", month: "May 2026",  units: 182, amount: 869.0,
           dueDate: "2026-06-15", status: "Paid" },
-        { id: "B9002", customerId: "C1001", month: "June 2026", units: 214, amount: 1237.5,
+        { id: "B9002", customerId: "C1001", month: "June 2026", units: 214, amount: 1037.5,
           dueDate: "2026-07-15", status: "Unpaid" },
-        { id: "B9003", customerId: "C1002", month: "June 2026", units: 158, amount: 711.0,
+        { id: "B9003", customerId: "C1002", month: "June 2026", units: 158, amount: 761.0,
           dueDate: "2026-07-15", status: "Unpaid" },
       ],
 
@@ -89,7 +92,7 @@ const EMS = (() => {
       ],
 
       payments: [
-        { id: "T3001", billId: "B9001", customerId: "C1001", amount: 819.0,
+        { id: "T3001", billId: "B9001", customerId: "C1001", amount: 869.0,
           method: "Card", date: "2026-06-10 18:22" },
       ],
 
@@ -125,13 +128,15 @@ const EMS = (() => {
 
   const money = (n) => "₹" + Number(n).toFixed(2);
 
-  const nextId = (kind, prefix) => {
-    const d = load();
-    const id = prefix + d.nextIds[kind];
-    d.nextIds[kind] += 1;
-    save(d);
-    return id;
-  };
+  /* Escape user-supplied text before it is interpolated into innerHTML.
+     Every page builds its tables as HTML strings, so anything a person
+     typed — a name, an address, a complaint description, a note — has
+     to pass through here. Without it a stray "<" silently swallows the
+     rest of a row, and a crafted one injects markup into whoever opens
+     the page next (a customer writes the complaint, staff read it).   */
+  const ESCAPES = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
+  const esc = (v) => String(v === null || v === undefined ? "" : v)
+                       .replace(/[&<>"']/g, (ch) => ESCAPES[ch]);
 
   /* ---------- Session (who is logged in) ---------- */
   function setSession(role, id, name) {
@@ -193,6 +198,12 @@ const EMS = (() => {
   function removeCustomer(id) {
     const d = load();
     d.customers = d.customers.filter(c => c.id !== id);
+    /* Take the account's records with it — otherwise the admin tables
+       keep listing bills and complaints whose customer no longer
+       exists, and the revenue totals count money nobody owes.       */
+    d.bills      = d.bills.filter(b => b.customerId !== id);
+    d.complaints = d.complaints.filter(k => k.customerId !== id);
+    d.payments   = d.payments.filter(p => p.customerId !== id);
     save(d);
   }
 
@@ -394,11 +405,11 @@ const EMS = (() => {
   }
 
   /* Turn a status string into the matching badge CSS class. */
-  const badgeClass = (status) => status.toLowerCase().replace(/\s+/g, "-");
+  const badgeClass = (status) => String(status || "").toLowerCase().replace(/\s+/g, "-");
 
   /* ---------- Public API ---------- */
   return {
-    resetDemo, now, money, badgeClass,
+    resetDemo, now, money, esc, badgeClass,
     setSession, getSession, logout, requireRole, requireEmployee, requirePerm,
     loginCustomer, loginEmployee,
     getCustomers, findCustomer, customerByMail, addCustomer, removeCustomer,

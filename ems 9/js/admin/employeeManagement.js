@@ -15,7 +15,7 @@ if (session) {
 
   /* Fill the Position picker from the single source of truth. */
   posSelect.innerHTML = EMS.listPositions()
-    .map(p => `<option value="${p}">${p}</option>`).join("");
+    .map(p => `<option value="${EMS.esc(p)}">${EMS.esc(p)}</option>`).join("");
   posSelect.value = "Field Agent";
 
   function render() {
@@ -27,9 +27,9 @@ if (session) {
       return `
         <tr>
           <td><strong>${emp.id}</strong></td>
-          <td>${emp.name}<br /><span class="muted" style="font-size:.78rem;">${emp.email}</span></td>
-          <td><span class="badge ${posBadge[EMS.tierOf(emp)] || "assigned"}">${pos}</span></td>
-          <td>${emp.dept}</td>
+          <td>${EMS.esc(emp.name)}<br /><span class="muted" style="font-size:.78rem;">${EMS.esc(emp.email)}</span></td>
+          <td><span class="badge ${posBadge[EMS.tierOf(emp)] || "assigned"}">${EMS.esc(pos)}</span></td>
+          <td>${EMS.esc(emp.dept)}</td>
           <td>${active ? `<span class="badge in-progress">${active} open</span>` : `<span class="muted">free</span>`}</td>
           <td><button class="btn btn-danger btn-sm" data-del="${emp.id}">Remove</button></td>
         </tr>`;
@@ -63,7 +63,7 @@ if (session) {
       password: document.getElementById("epassword").value,
     });
 
-    alert.innerHTML = `Added <strong>${emp.name}</strong> (${emp.id}) as ${EMS.positionLabel(emp)}.`;
+    alert.innerHTML = `Added <strong>${EMS.esc(emp.name)}</strong> (${emp.id}) as ${EMS.esc(EMS.positionLabel(emp))}.`;
     alert.classList.add("show");
     ["ename", "eemail", "ephone", "epassword"].forEach(id => document.getElementById(id).value = "");
     render();
