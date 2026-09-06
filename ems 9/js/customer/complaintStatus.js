@@ -8,6 +8,7 @@ if (session) {
   document.getElementById("whoMeta").textContent = "Meter " + me.meterNo;
   document.getElementById("logoutBtn").addEventListener("click", () => EMS.logout("login.html"));
 
+  const esc = EMS.esc;
   const list = document.getElementById("complaintList");
   const complaints = EMS.complaintsForCustomer(me.id).slice().reverse();
 
@@ -23,21 +24,21 @@ if (session) {
       const assignee = k.assignedTo ? EMS.findEmployee(k.assignedTo) : null;
       const timeline = k.updates.map(u => `
         <li>
-          <div class="t-when">${u.at}</div>
-          <div class="t-what">${u.what}</div>
-          ${u.note ? `<div class="t-note">“${u.note}”</div>` : ""}
+          <div class="t-when">${esc(u.at)}</div>
+          <div class="t-what">${esc(u.what)}</div>
+          ${u.note ? `<div class="t-note">“${esc(u.note)}”</div>` : ""}
         </li>`).join("");
 
       return `
         <div class="glass">
           <div class="card-head">
             <div>
-              <h2>${k.id} · ${k.type}</h2>
-              <p class="muted">Raised ${k.createdAt}${assignee ? " · handled by " + assignee.name : ""}</p>
+              <h2>${esc(k.id)} · ${esc(k.type)}</h2>
+              <p class="muted">Raised ${esc(k.createdAt)}${assignee ? " · handled by " + esc(assignee.name) : ""}</p>
             </div>
-            <span class="badge ${EMS.badgeClass(k.status)}">${k.status}</span>
+            <span class="badge ${EMS.badgeClass(k.status)}">${esc(k.status)}</span>
           </div>
-          <p style="font-size:0.92rem;">${k.description}</p>
+          <p style="font-size:0.92rem;">${esc(k.description)}</p>
           <ul class="timeline mt-2">${timeline}</ul>
         </div>`;
     }).join("");

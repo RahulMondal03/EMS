@@ -5,6 +5,7 @@ if (session) {
 
   // Top bar (name, nav, logout) is built once in js/chrome.js
 
+  const esc     = EMS.esc;
   const search  = document.getElementById("search");
   const results = document.getElementById("results");
 
@@ -17,11 +18,11 @@ if (session) {
     }
 
     const matches = EMS.getCustomers().filter(c =>
-      [c.name, c.email, c.meterNo].some(v => v.toLowerCase().includes(q)));
+      [c.name, c.email, c.phone, c.meterNo].some(v => String(v || "").toLowerCase().includes(q)));
 
     if (!matches.length) {
       results.innerHTML = `<div class="glass center muted" style="padding:34px;">
-        No customer matches “${search.value}”.</div>`;
+        No customer matches “${esc(search.value)}”.</div>`;
       return;
     }
 
@@ -33,16 +34,16 @@ if (session) {
 
       const billRows = bills.slice(-4).reverse().map(b => `
         <tr>
-          <td>${b.month}</td><td>${b.units}</td>
+          <td>${esc(b.month)}</td><td>${esc(b.units)}</td>
           <td>${EMS.money(b.amount)}</td>
-          <td><span class="badge ${EMS.badgeClass(b.status)}">${b.status}</span></td>
+          <td><span class="badge ${EMS.badgeClass(b.status)}">${esc(b.status)}</span></td>
         </tr>`).join("") ||
         `<tr class="empty"><td colspan="4">No bills.</td></tr>`;
 
       const complaintRows = complaints.slice(-4).reverse().map(k => `
         <tr>
-          <td><strong>${k.id}</strong></td><td>${k.type}</td>
-          <td><span class="badge ${EMS.badgeClass(k.status)}">${k.status}</span></td>
+          <td><strong>${esc(k.id)}</strong></td><td>${esc(k.type)}</td>
+          <td><span class="badge ${EMS.badgeClass(k.status)}">${esc(k.status)}</span></td>
         </tr>`).join("") ||
         `<tr class="empty"><td colspan="3">No complaints.</td></tr>`;
 
@@ -50,9 +51,9 @@ if (session) {
         <div class="glass">
           <div class="card-head">
             <div>
-              <h2>${c.name} <span class="muted" style="font-size:0.8rem;">${c.id}</span></h2>
-              <p class="muted">${c.email} · ${c.phone} · Meter ${c.meterNo}</p>
-              <p class="muted">${c.address}</p>
+              <h2>${esc(c.name)} <span class="muted" style="font-size:0.8rem;">${esc(c.id)}</span></h2>
+              <p class="muted">${esc(c.email)} · ${esc(c.phone)} · Meter ${esc(c.meterNo)}</p>
+              <p class="muted">${esc(c.address)}</p>
             </div>
             ${due ? `<span class="badge unpaid">${EMS.money(due)} due</span>`
                   : `<span class="badge paid">No dues</span>`}

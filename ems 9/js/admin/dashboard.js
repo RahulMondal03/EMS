@@ -5,6 +5,7 @@ if (session) {
 
   // Top bar (name, nav, logout) is built once in js/chrome.js
 
+  const esc        = EMS.esc;
   const complaints = EMS.getComplaints();
   const bills      = EMS.getBills();
 
@@ -34,11 +35,11 @@ if (session) {
     const c = EMS.findCustomer(k.customerId);
     return `
       <tr>
-        <td><strong>${k.id}</strong></td>
-        <td>${c ? c.name : k.customerId}</td>
-        <td>${k.type}</td>
-        <td>${k.createdAt}</td>
-        <td><span class="badge ${EMS.badgeClass(k.status)}">${k.status}</span></td>
+        <td><strong>${esc(k.id)}</strong></td>
+        <td>${esc(c ? c.name : k.customerId)}</td>
+        <td>${esc(k.type)}</td>
+        <td>${esc(k.createdAt)}</td>
+        <td><span class="badge ${EMS.badgeClass(k.status)}">${esc(k.status)}</span></td>
       </tr>`;
   }).join("") ||
   `<tr class="empty"><td colspan="5">Nothing waiting — every complaint is assigned. 🎉</td></tr>`;

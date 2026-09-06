@@ -8,19 +8,20 @@ if (session) {
   document.getElementById("whoMeta").textContent = "Meter " + me.meterNo;
   document.getElementById("logoutBtn").addEventListener("click", () => EMS.logout("login.html"));
 
+  const esc  = EMS.esc;
   const rows = document.getElementById("billRows");
   const bills = EMS.billsForCustomer(me.id).slice().reverse();
 
   rows.innerHTML = bills.map(b => `
     <tr>
-      <td><strong>${b.id}</strong></td>
-      <td>${b.month}</td>
-      <td>${b.units}</td>
+      <td><strong>${esc(b.id)}</strong></td>
+      <td>${esc(b.month)}</td>
+      <td>${esc(b.units)}</td>
       <td><strong>${EMS.money(b.amount)}</strong></td>
-      <td>${b.dueDate}</td>
-      <td><span class="badge ${EMS.badgeClass(b.status)}">${b.status}</span></td>
+      <td>${esc(b.dueDate)}</td>
+      <td><span class="badge ${EMS.badgeClass(b.status)}">${esc(b.status)}</span></td>
       <td>${b.status === "Unpaid"
-            ? `<button class="btn btn-primary btn-sm" data-bill="${b.id}">Pay now</button>`
+            ? `<button class="btn btn-primary btn-sm" data-bill="${esc(b.id)}">Pay now</button>`
             : `<span class="muted">Paid</span>`}</td>
     </tr>`).join("") ||
     `<tr class="empty"><td colspan="7">No bills on this account yet.</td></tr>`;

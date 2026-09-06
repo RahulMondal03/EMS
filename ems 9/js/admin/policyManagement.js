@@ -5,6 +5,7 @@ if (session) {
 
   // Top bar (name, nav, logout) is built once in js/chrome.js
 
+  const esc       = EMS.esc;
   const rows      = document.getElementById("policyRows");
   const formTitle = document.getElementById("formTitle");
   const idField   = document.getElementById("policyId");
@@ -15,13 +16,13 @@ if (session) {
     rows.innerHTML = EMS.getPolicies().map(p => `
       <tr>
         <td>
-          <strong>${p.name}</strong><br />
-          <span class="muted">${p.description}</span>
+          <strong>${esc(p.name)}</strong><br />
+          <span class="muted">${esc(p.description)}</span>
         </td>
         <td><strong>${EMS.money(p.ratePerUnit)}</strong></td>
         <td style="white-space:nowrap;">
-          <button class="btn btn-ghost btn-sm"  data-edit="${p.id}">Edit</button>
-          <button class="btn btn-danger btn-sm" data-del="${p.id}">Delete</button>
+          <button class="btn btn-ghost btn-sm"  data-edit="${esc(p.id)}">Edit</button>
+          <button class="btn btn-danger btn-sm" data-del="${esc(p.id)}">Delete</button>
         </td>
       </tr>`).join("") ||
       `<tr class="empty"><td colspan="3">No policies yet — add the first one.</td></tr>`;

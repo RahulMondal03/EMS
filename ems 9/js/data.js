@@ -125,6 +125,19 @@ const EMS = (() => {
 
   const money = (n) => "₹" + Number(n).toFixed(2);
 
+  /* Escape a value before it is dropped into innerHTML. Every table and
+     card in this app is built by joining HTML strings together, so any
+     stored value (a name, an address, a complaint description, a search
+     box) has to pass through here — otherwise the browser would parse
+     an apostrophe or a stray "<" as markup and the page would break or
+     run whatever the text happened to contain.                        */
+  const esc = (v) => String(v == null ? "" : v)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
   const nextId = (kind, prefix) => {
     const d = load();
     const id = prefix + d.nextIds[kind];
@@ -145,10 +158,21 @@ const EMS = (() => {
     sessionStorage.removeItem("ems_session");
     location.href = toLogin;
   }
-  /* Redirect to login if the visitor is not signed in with the right role. */
+  /* Redirect to login if the visitor is not signed in with the right role.
+     The account can also disappear while a tab sits open — an admin
+     removes it on the Customers or Team page — so the record is checked
+     too. Without this every page would throw on a null record instead
+     of simply sending the person back to the login screen.            */
   function requireRole(role, loginPage) {
     const s = getSession();
     if (!s || s.role !== role) { location.href = loginPage; return null; }
+
+    const account = role === "customer" ? findCustomer(s.id) : findEmployee(s.id);
+    if (!account) {
+      sessionStorage.removeItem("ems_session");
+      location.href = loginPage;
+      return null;
+    }
     return s;
   }
 
@@ -168,18 +192,23 @@ const EMS = (() => {
     return s;
   }
 
-  /* ---------- Auth ---------- */
+  /* ---------- Auth ----------
+     Emails are compared without case, so someone who registered as
+     "Anita@example.com" can still sign in typing "anita@example.com".  */
+  const sameMail = (a, b) =>
+    String(a || "").trim().toLowerCase() === String(b || "").trim().toLowerCase();
+
   function loginCustomer(email, password) {
-    return load().customers.find(c => c.email === email && c.password === password) || null;
+    return load().customers.find(c => sameMail(c.email, email) && c.password === password) || null;
   }
   function loginEmployee(email, password) {
-    return load().employees.find(e => e.email === email && e.password === password) || null;
+    return load().employees.find(e => sameMail(e.email, email) && e.password === password) || null;
   }
 
   /* ---------- Customers ---------- */
   const getCustomers   = () => load().customers;
   const findCustomer   = (id) => load().customers.find(c => c.id === id) || null;
-  const customerByMail = (email) => load().customers.find(c => c.email === email) || null;
+  const customerByMail = (email) => load().customers.find(c => sameMail(c.email, email)) || null;
 
   function addCustomer(cust) {
     const d = load();
@@ -190,15 +219,22 @@ const EMS = (() => {
     save(d);
     return cust;
   }
+  /* Removing a customer takes their records with them. Leaving the
+     bills behind would keep the deleted account in the revenue totals
+     on the admin dashboard and show a bare id on the complaint board. */
   function removeCustomer(id) {
     const d = load();
-    d.customers = d.customers.filter(c => c.id !== id);
+    d.customers  = d.customers.filter(c => c.id !== id);
+    d.bills      = d.bills.filter(b => b.customerId !== id);
+    d.payments   = d.payments.filter(p => p.customerId !== id);
+    d.complaints = d.complaints.filter(k => k.customerId !== id);
     save(d);
   }
 
   /* ---------- Employees ---------- */
   const getEmployees = () => load().employees;
   const findEmployee = (id) => load().employees.find(e => e.id === id) || null;
+  const employeeByMail = (email) => load().employees.find(e => sameMail(e.email, email)) || null;
 
   /* ----- Position & permissions ----- */
   const listPositions = () => Object.keys(POSITIONS);
@@ -371,12 +407,19 @@ const EMS = (() => {
     return k;
   }
 
-  /* Admin action: hand a complaint to an employee. */
+  /* Admin action: hand a complaint to an employee. Routing is downward
+     only, and the rule is enforced here rather than only in the dropdown
+     the page draws, so it still holds if the page is driven by hand.  */
   function assignComplaint(complaintId, employeeId) {
     const d = load();
     const k = d.complaints.find(x => x.id === complaintId);
     const e = d.employees.find(x => x.id === employeeId);
     if (!k || !e) return;
+
+    const s  = getSession();
+    const me = (s && s.role === "employee") ? d.employees.find(x => x.id === s.id) : null;
+    if (me && !assignableEmployees(me).some(x => x.id === employeeId)) return;
+
     k.assignedTo = employeeId;
     k.status = "Assigned";
     k.updates.push({ at: now(), what: "Assigned to " + e.name, note: "" });
@@ -393,21 +436,31 @@ const EMS = (() => {
     save(d);
   }
 
+  /* May this employee open or change this complaint? People who run the
+     complaint board (Grid Manager, Supervisor) see everything; a Field
+     Agent only ever touches the complaints routed to them. Pages call
+     this before rendering, so editing the ?id= in the address bar can't
+     reach someone else's work.                                        */
+  function mayHandleComplaint(emp, complaint) {
+    if (!emp || !complaint) return false;
+    return can(emp, "complaints") || complaint.assignedTo === emp.id;
+  }
+
   /* Turn a status string into the matching badge CSS class. */
   const badgeClass = (status) => status.toLowerCase().replace(/\s+/g, "-");
 
   /* ---------- Public API ---------- */
   return {
-    resetDemo, now, money, badgeClass,
+    resetDemo, now, money, badgeClass, esc,
     setSession, getSession, logout, requireRole, requireEmployee, requirePerm,
     loginCustomer, loginEmployee,
     getCustomers, findCustomer, customerByMail, addCustomer, removeCustomer,
-    getEmployees, findEmployee, addEmployee, removeEmployee,
+    getEmployees, findEmployee, employeeByMail, addEmployee, removeEmployee,
     listPositions, positionLabel, positionOf, tierOf, permsOf, can, assignableEmployees,
     getPolicies, addPolicy, updatePolicy, removePolicy,
     getBills, billsForCustomer, findBill, payBill,
     tariffRates, computeBill, addBill,
     getComplaints, findComplaint, complaintsForCustomer, complaintsForEmployee,
-    addComplaint, assignComplaint, updateComplaintStatus,
+    addComplaint, assignComplaint, updateComplaintStatus, mayHandleComplaint,
   };
 })();

@@ -7,6 +7,7 @@ if (session) {
 
   // Top bar (name, nav, logout) is built once in js/chrome.js
 
+  const esc         = EMS.esc;
   const customerSel = document.getElementById("customer");
   const monthInput  = document.getElementById("month");
   const unitsInput  = document.getElementById("units");
@@ -19,15 +20,18 @@ if (session) {
   /* Populate the customer dropdown */
   customerSel.insertAdjacentHTML("beforeend",
     EMS.getCustomers().map(c =>
-      `<option value="${c.id}">${c.name} · ${c.id} · ${c.meterNo}</option>`).join(""));
+      `<option value="${esc(c.id)}">${esc(c.name)} · ${esc(c.id)} · ${esc(c.meterNo)}</option>`).join(""));
 
   /* Default month = current month + year, e.g. "July 2026" */
   const d = new Date();
   monthInput.value = d.toLocaleString("en-US", { month: "long" }) + " " + d.getFullYear();
 
-  /* Default due date = 21 days out */
-  const due = new Date(d.getTime() + 21 * 864e5);
-  dueInput.value = due.toISOString().slice(0, 10);
+  /* Default due date = 21 days out. Built from the local date parts:
+     toISOString() reports UTC, which lands a day early for anyone east
+     of Greenwich early in the morning.                                */
+  const due = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 21);
+  const pad = (n) => String(n).padStart(2, "0");
+  dueInput.value = `${due.getFullYear()}-${pad(due.getMonth() + 1)}-${pad(due.getDate())}`;
 
   /* ---------- Which tariff mode is selected ---------- */
   const currentMode = () =>
@@ -37,7 +41,7 @@ if (session) {
   function renderPreview() {
     const b = EMS.computeBill(unitsInput.value, currentMode());
     const lineRows = b.lines.map(l =>
-      `<div class="row"><span>${l.label}</span><span>${EMS.money(l.amount)}</span></div>`).join("");
+      `<div class="row"><span>${esc(l.label)}</span><span>${EMS.money(l.amount)}</span></div>`).join("");
     preview.innerHTML = `
       ${lineRows}
       <div class="row"><span>Fixed service charge</span><span>${EMS.money(b.serviceCharge)}</span></div>
@@ -51,13 +55,13 @@ if (session) {
       const c = EMS.findCustomer(b.customerId);
       return `
         <tr>
-          <td><strong>${b.id}</strong></td>
-          <td>${c ? c.name : b.customerId}</td>
-          <td>${b.month}</td>
-          <td><strong>${b.units}</strong></td>
+          <td><strong>${esc(b.id)}</strong></td>
+          <td>${esc(c ? c.name : b.customerId)}</td>
+          <td>${esc(b.month)}</td>
+          <td><strong>${esc(b.units)}</strong></td>
           <td><strong>${EMS.money(b.amount)}</strong></td>
-          <td>${b.dueDate}</td>
-          <td><span class="badge ${EMS.badgeClass(b.status)}">${b.status}</span></td>
+          <td>${esc(b.dueDate)}</td>
+          <td><span class="badge ${EMS.badgeClass(b.status)}">${esc(b.status)}</span></td>
         </tr>`;
     }).join("") ||
     `<tr class="empty"><td colspan="7">No bills yet — generate the first one above.</td></tr>`;

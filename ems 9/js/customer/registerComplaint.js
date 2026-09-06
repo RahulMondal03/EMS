@@ -22,7 +22,7 @@ if (session) {
 
     /* Confirm inline, clear the form, and point to the status page. */
     const alert = document.getElementById("alert");
-    alert.innerHTML = `Complaint <strong>${complaint.id}</strong> registered.
+    alert.innerHTML = `Complaint <strong>${EMS.esc(complaint.id)}</strong> registered.
       Track it on the <a href="complaintStatus.html">status page</a>.`;
     alert.classList.add("show");
     document.getElementById("type").value = "";

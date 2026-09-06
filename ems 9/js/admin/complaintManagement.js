@@ -5,6 +5,7 @@ if (session) {
 
   // Top bar (name, nav, logout) is built once in js/chrome.js
 
+  const esc      = EMS.esc;
   const me       = EMS.findEmployee(session.id);
   const canAssign = EMS.can(me, "assign");
   const rows     = document.getElementById("complaintRows");
@@ -24,9 +25,9 @@ if (session) {
       let assignCell;
       if (k.status === "Open" && canAssign && team.length) {
         const options = team.map(e =>
-          `<option value="${e.id}">${e.name} · ${EMS.positionLabel(e)}</option>`).join("");
+          `<option value="${esc(e.id)}">${esc(e.name)} · ${esc(EMS.positionLabel(e))}</option>`).join("");
         assignCell = `
-          <select data-assign="${k.id}">
+          <select data-assign="${esc(k.id)}">
             <option value="">Choose employee…</option>
             ${options}
           </select>`;
@@ -35,16 +36,16 @@ if (session) {
           ? `<span class="muted">No one to assign to</span>`
           : `<span class="muted">Awaiting assignment</span>`;
       } else {
-        assignCell = assignee ? `${assignee.name} · ${EMS.positionLabel(assignee)}` : "—";
+        assignCell = assignee ? `${esc(assignee.name)} · ${esc(EMS.positionLabel(assignee))}` : "—";
       }
 
       return `
         <tr>
-          <td><strong>${k.id}</strong></td>
-          <td>${c ? c.name : k.customerId}</td>
-          <td>${k.type}</td>
-          <td style="max-width:280px;">${k.description}</td>
-          <td><span class="badge ${EMS.badgeClass(k.status)}">${k.status}</span></td>
+          <td><strong>${esc(k.id)}</strong></td>
+          <td>${esc(c ? c.name : k.customerId)}</td>
+          <td>${esc(k.type)}</td>
+          <td style="max-width:280px;">${esc(k.description)}</td>
+          <td><span class="badge ${EMS.badgeClass(k.status)}">${esc(k.status)}</span></td>
           <td>${assignCell}</td>
         </tr>`;
     }).join("") ||

@@ -24,10 +24,10 @@ if (session) {
       location.href = "viewPayBill.html";
     } else {
       summary.innerHTML = `
-        <div class="row"><span>Bill ID</span><span>${bill.id}</span></div>
-        <div class="row"><span>Billing month</span><span>${bill.month}</span></div>
-        <div class="row"><span>Units consumed</span><span>${bill.units}</span></div>
-        <div class="row"><span>Due date</span><span>${bill.dueDate}</span></div>
+        <div class="row"><span>Bill ID</span><span>${EMS.esc(bill.id)}</span></div>
+        <div class="row"><span>Billing month</span><span>${EMS.esc(bill.month)}</span></div>
+        <div class="row"><span>Units consumed</span><span>${EMS.esc(bill.units)}</span></div>
+        <div class="row"><span>Due date</span><span>${EMS.esc(bill.dueDate)}</span></div>
         <div class="row total"><span>Total payable</span><span>${EMS.money(bill.amount)}</span></div>`;
 
       /* Show the UPI field only when UPI is selected. */
@@ -51,6 +51,11 @@ if (session) {
         if (!ok) return;
 
         const payment = EMS.payBill(bill.id, "UPI");
+        if (!payment) {                     // already settled in another tab
+          sessionStorage.removeItem("ems_pending_bill");
+          location.href = "viewPayBill.html";
+          return;
+        }
         sessionStorage.setItem("ems_last_payment", JSON.stringify(payment));
         sessionStorage.removeItem("ems_pending_bill");
         location.href = "paymentSuccess.html";
@@ -65,13 +70,16 @@ if (session) {
     if (!raw) {
       location.href = "dashboard.html";             // nothing to show
     } else {
+      /* Consume the receipt: coming back to this page later should not
+         replay the last payment as if it had just happened.          */
+      sessionStorage.removeItem("ems_last_payment");
       const p = JSON.parse(raw);
       const bill = EMS.findBill(p.billId);
       receipt.innerHTML = `
-        <div class="row"><span>Transaction ID</span><span>${p.id}</span></div>
-        <div class="row"><span>Bill</span><span>${bill.id} · ${bill.month}</span></div>
-        <div class="row"><span>Method</span><span>${p.method}</span></div>
-        <div class="row"><span>Paid on</span><span>${p.date}</span></div>
+        <div class="row"><span>Transaction ID</span><span>${EMS.esc(p.id)}</span></div>
+        <div class="row"><span>Bill</span><span>${EMS.esc(p.billId)}${bill ? " · " + EMS.esc(bill.month) : ""}</span></div>
+        <div class="row"><span>Method</span><span>${EMS.esc(p.method)}</span></div>
+        <div class="row"><span>Paid on</span><span>${EMS.esc(p.date)}</span></div>
         <div class="row total"><span>Amount paid</span><span>${EMS.money(p.amount)}</span></div>`;
     }
   }

@@ -11,6 +11,7 @@ if (session) {
   document.getElementById("logoutBtn").addEventListener("click", () => EMS.logout("login.html"));
   document.getElementById("greeting").textContent = "Hello, " + me.name.split(" ")[0];
 
+  const esc        = EMS.esc;
   const bills      = EMS.billsForCustomer(me.id);
   const complaints = EMS.complaintsForCustomer(me.id);
 
@@ -24,7 +25,7 @@ if (session) {
 
   const latest = bills[bills.length - 1];
   if (latest) {
-    document.getElementById("statUnits").innerHTML = latest.units + " <small>units</small>";
+    document.getElementById("statUnits").innerHTML = esc(latest.units) + " <small>units</small>";
     document.getElementById("statUnitsNote").textContent = latest.month;
   }
 
@@ -37,10 +38,10 @@ if (session) {
   const billRows = document.getElementById("billRows");
   billRows.innerHTML = bills.slice(-3).reverse().map(b => `
     <tr>
-      <td><strong>${b.month}</strong></td>
-      <td>${b.units}</td>
+      <td><strong>${esc(b.month)}</strong></td>
+      <td>${esc(b.units)}</td>
       <td>${EMS.money(b.amount)}</td>
-      <td><span class="badge ${EMS.badgeClass(b.status)}">${b.status}</span></td>
+      <td><span class="badge ${EMS.badgeClass(b.status)}">${esc(b.status)}</span></td>
     </tr>`).join("") ||
     `<tr class="empty"><td colspan="4">No bills on this account yet.</td></tr>`;
 
@@ -48,9 +49,9 @@ if (session) {
   const complaintRows = document.getElementById("complaintRows");
   complaintRows.innerHTML = complaints.slice(-3).reverse().map(k => `
     <tr>
-      <td><strong>${k.id}</strong></td>
-      <td>${k.type}</td>
-      <td><span class="badge ${EMS.badgeClass(k.status)}">${k.status}</span></td>
+      <td><strong>${esc(k.id)}</strong></td>
+      <td>${esc(k.type)}</td>
+      <td><span class="badge ${EMS.badgeClass(k.status)}">${esc(k.status)}</span></td>
     </tr>`).join("") ||
     `<tr class="empty"><td colspan="3">Nothing raised — hope it stays that way!</td></tr>`;
 }

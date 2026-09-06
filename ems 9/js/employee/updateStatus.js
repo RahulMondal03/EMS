@@ -5,15 +5,19 @@ if (session) {
 
   // Top bar (name, nav, logout) is built once in js/chrome.js
 
+  const me = EMS.findEmployee(session.id);
   const id = new URLSearchParams(location.search).get("id");
   const k  = id ? EMS.findComplaint(id) : null;
 
-  if (!k || k.status === "Resolved") {
-    location.href = "dashboard.html";              // nothing to update
+  /* Nothing to update — or not this person's complaint to update. The
+     dashboard only links to your own queue, but the id also travels in
+     the address bar, so the rule is checked here too.                */
+  if (!me || !k || k.status === "Resolved" || !EMS.mayHandleComplaint(me, k)) {
+    location.href = "dashboard.html";
   } else {
     document.getElementById("title").textContent = "Update " + k.id;
     document.getElementById("subtitle").textContent = k.type + " — currently “" + k.status + "”";
-    document.getElementById("backLink").href = "complaintDetails.html?id=" + k.id;
+    document.getElementById("backLink").href = "complaintDetails.html?id=" + encodeURIComponent(k.id);
 
     document.getElementById("saveBtn").addEventListener("click", () => {
       const ok = V.validate([
@@ -27,7 +31,7 @@ if (session) {
       EMS.updateComplaintStatus(k.id, status, note);
 
       const alert = document.getElementById("alert");
-      alert.innerHTML = `Saved — ${k.id} is now <strong>${status}</strong>. Returning to your queue…`;
+      alert.innerHTML = `Saved — ${EMS.esc(k.id)} is now <strong>${EMS.esc(status)}</strong>. Returning to your queue…`;
       alert.classList.add("show");
       setTimeout(() => location.href = "dashboard.html", 1200);
     });

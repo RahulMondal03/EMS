@@ -19,12 +19,16 @@ const V = (() => {
   const cvv        = (v) => /^\d{3}$/.test(v.trim());
   const upiId      = (v) => /^[\w.\-]{2,}@[a-zA-Z]{2,}$/.test(v.trim());
 
-  /* Expiry must be MM/YY and in the future */
+  /* Expiry must be MM/YY and not yet past. A card is good through the
+     whole of its expiry month, so compare against the first day of the
+     month after it — the old check used the last day at midnight and so
+     rejected a valid card on that very day.                          */
   const expiry = (v) => {
     const m = v.trim().match(/^(0[1-9]|1[0-2])\/(\d{2})$/);
     if (!m) return false;
-    const exp = new Date(2000 + Number(m[2]), Number(m[1]), 0);   // last day of that month
-    return exp >= new Date();
+    const endOfMonth = new Date(2000 + Number(m[2]), Number(m[1]), 1);   // first day after it
+    const today = new Date();
+    return endOfMonth > new Date(today.getFullYear(), today.getMonth(), today.getDate());
   };
 
   /* ---------- Field helpers ---------- */
