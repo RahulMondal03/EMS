@@ -1,0 +1,15 @@
+{
+  "name": "voltgrid-ems",
+  "private": true,
+  "version": "0.0.0",
+  "description": "VoltGrid Electricity Management System — static demo app plus its Playwright end-to-end suite.",
+  "scripts": {
+    "serve": "node tests/static-server.js",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1"
+  }
+}
