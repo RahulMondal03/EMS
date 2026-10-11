@@ -65,18 +65,14 @@ if (session) {
 
   /* ---------- Generate ---------- */
   document.getElementById("generateBtn").addEventListener("click", () => {
-    const ok = V.validate([
-      { id: "customer", checks: [[V.required, "Choose a customer"]] },
-      { id: "month",    checks: [[V.required, "Billing month is required"]] },
-      { id: "units",    checks: [[V.required, "Enter the units consumed"], [V.number, "Units must be a number"]] },
-      { id: "due",      checks: [[V.required, "Set a due date"]] },
-    ]);
+    const ok = new InputValidator()
+      .field("customer").required("Choose a customer")
+      .field("month").required("Billing month is required")
+      .field("units").required("Enter the units consumed").number("Units must be a number")
+                     .min(0, "Units cannot be negative")
+      .field("due").required("Set a due date")
+      .validate();
     if (!ok) return;
-
-    if (Number(unitsInput.value) < 0) {
-      V.setError(unitsInput, "Units cannot be negative");
-      return;
-    }
 
     const b = EMS.computeBill(unitsInput.value, currentMode());
     const bill = EMS.addBill({

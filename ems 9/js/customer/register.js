@@ -1,24 +1,18 @@
 /* customer/register.js — create a new customer account. */
 
 document.getElementById("registerBtn").addEventListener("click", () => {
-  const ok = V.validate([
-    { id: "name",     checks: [[V.required, "Name is required"], [V.minLen(3), "Name looks too short"]] },
-    { id: "phone",    checks: [[V.required, "Mobile number is required"], [V.phone, "Enter a valid 10-digit mobile number"]] },
-    { id: "email",    checks: [[V.required, "Email is required"], [V.email, "Enter a valid email"]] },
-    { id: "address",  checks: [[V.required, "Service address is required"]] },
-    { id: "password", checks: [[V.required, "Password is required"], [V.minLen(6), "Use at least 6 characters"]] },
-    { id: "confirm",  checks: [[V.required, "Please repeat your password"]] },
-  ]);
+  const ok = new InputValidator()
+    .field("name").required("Name is required").minLength(3, "Name looks too short")
+    .field("phone").required("Mobile number is required").phone("Enter a valid 10-digit mobile number")
+    .field("email").required("Email is required").email("Enter a valid email")
+    .field("address").required("Service address is required")
+    .field("password").required("Password is required").minLength(6, "Use at least 6 characters")
+    .field("confirm").required("Please repeat your password").matches("password", "Passwords do not match")
+    .validate();
   if (!ok) return;
 
   const alert = document.getElementById("alert");
   const val = (id) => document.getElementById(id).value.trim();
-
-  /* Passwords must match. */
-  if (val("password") !== val("confirm")) {
-    V.setError(document.getElementById("confirm"), "Passwords do not match");
-    return;
-  }
 
   /* Emails must be unique in the store. */
   if (EMS.customerByMail(val("email"))) {
