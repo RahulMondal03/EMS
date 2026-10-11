@@ -1,3 +1,8 @@
 # Python bytecode cache
 __pycache__/
 *.py[cod]
+
+# Build output from the C and Java scrapers
+*.o
+*.class
+webscraper/webscraper
