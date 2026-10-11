@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VoltGrid Demo Tour</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <!--
+    demo.html — a single, self-contained walkthrough of VoltGrid.
+    No dependency on js/data.js or localStorage: everything here is a
+    sandboxed simulation that mirrors the real rules (tiered billing,
+    position permissions, downward-only complaint routing), so it can be
+    opened on its own or shared as one file. Links at the bottom jump
+    into the real app.
+  -->
+  <style>
+    :root {
+      --accent: #2e7d32;
+      --accent-hi: #43a047;
+      --accent-soft: #c8e6c9;
+      --ink: #10281a;
+      --ink-soft: #47604f;
+      --bg: #eef8f0;
+      --bg-2: #dff2e4;
+      --card: rgba(255,255,255,.72);
+      --card-solid: #ffffff;
+      --line: rgba(16,40,26,.12);
+      --warn: #b26a00;
+      --warn-soft: #fff1d6;
+      --info: #1565c0;
+      --info-soft: #e1edfb;
+      --ok-soft: #dcf3df;
+      --muted-soft: #eef1ef;
+      --shadow: 0 24px 48px -28px rgba(21,84,45,.35), 0 2px 8px -4px rgba(21,84,45,.15);
+      --radius: 20px;
+      --font-display: "Sora", system-ui, sans-serif;
+      --font-body: "Inter", system-ui, sans-serif;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --accent: #66bb6a; --accent-hi: #81c784; --accent-soft: #1f3a26;
+        --ink: #e4f2e7; --ink-soft: #9fb8a6;
+        --bg: #0d1a12; --bg-2: #12251a;
+        --card: rgba(24,42,31,.78); --card-solid: #18291f;
+        --line: rgba(228,242,231,.12);
+        --warn: #ffb74d; --warn-soft: #3a2c12;
+        --info: #64b5f6; --info-soft: #132a40;
+        --ok-soft: #1c3a24; --muted-soft: #1d2a22;
+        --shadow: 0 24px 48px -28px rgba(0,0,0,.6);
+      }
+    }
+    :root[data-theme="dark"] {
+      --accent: #66bb6a; --accent-hi: #81c784; --accent-soft: #1f3a26;
+      --ink: #e4f2e7; --ink-soft: #9fb8a6;
+      --bg: #0d1a12; --bg-2: #12251a;
+      --card: rgba(24,42,31,.78); --card-solid: #18291f;
+      --line: rgba(228,242,231,.12);
+      --warn: #ffb74d; --warn-soft: #3a2c12;
+      --info: #64b5f6; --info-soft: #132a40;
+      --ok-soft: #1c3a24; --muted-soft: #1d2a22;
+      --shadow: 0 24px 48px -28px rgba(0,0,0,.6);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      color: var(--ink);
+      background:
+        radial-gradient(900px 600px at 10% -10%, var(--bg-2), transparent 60%),
+        radial-gradient(800px 500px at 95% 5%, var(--bg-2), transparent 60%),
+        var(--bg);
+      background-attachment: fixed;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--accent); }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px 64px; }
+
+    /* top bar */
+    .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 0; }
+    .brand { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 700; font-size: 1.15rem; }
+    .brand .bolt { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 12px; background: linear-gradient(135deg, var(--accent), var(--accent-hi)); color: #fff; }
+    .brand small { display: block; font-family: var(--font-body); font-weight: 500; font-size: .72rem; color: var(--ink-soft); }
+    .theme-btn { border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 999px; padding: 6px 14px; font: inherit; font-size: .85rem; cursor: pointer; }
+
+    /* hero */
+    .hero { padding: 32px 0 24px; }
+    .eyebrow { text-transform: uppercase; letter-spacing: .12em; font-size: .75rem; font-weight: 600; color: var(--accent); }
+    h1 { font-family: var(--font-display); font-size: clamp(1.9rem, 5vw, 3rem); line-height: 1.15; margin: 8px 0 14px; }
+    h1 span { color: var(--accent); }
+    .lead { max-width: 640px; color: var(--ink-soft); font-size: 1.05rem; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .chip { font-size: .8rem; padding: 5px 12px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); }
+
+    /* step nav */
+    .steps { position: sticky; top: 0; z-index: 5; display: flex; gap: 6px; overflow-x: auto; padding: 10px 0; margin: 12px 0 8px; background: linear-gradient(var(--bg) 70%, transparent); }
+    .steps a { flex: 0 0 auto; text-decoration: none; color: var(--ink); font-size: .85rem; font-weight: 500; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); }
+    .steps a b { color: var(--accent); margin-right: 4px; }
+
+    section.block { margin-top: 36px; scroll-margin-top: 64px; }
+    h2 { font-family: var(--font-display); font-size: 1.45rem; margin-bottom: 4px; }
+    .sub { color: var(--ink-soft); margin-bottom: 16px; max-width: 720px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    @media (max-width: 760px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+    /* architecture */
+    .arch h3 { font-family: var(--font-display); font-size: 1rem; margin-bottom: 6px; }
+    .arch p { color: var(--ink-soft); font-size: .92rem; }
+    .arch code, .creds code { font-size: .82rem; background: var(--muted-soft); padding: 1px 6px; border-radius: 6px; }
+    .flow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 16px; font-size: .88rem; }
+    .flow .node { padding: 8px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--card-solid); }
+    .flow .node.core { border-color: var(--accent); font-weight: 600; }
+    .flow .arrow { color: var(--ink-soft); }
+
+    /* roles */
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .tab { font: inherit; font-size: .9rem; cursor: pointer; padding: 8px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--card-solid); color: var(--ink); }
+    .tab[aria-selected="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .perm-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+    .perm { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--card-solid); font-size: .9rem; }
+    .perm .mark { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: .75rem; flex: 0 0 auto; }
+    .perm.on .mark { background: var(--accent); color: #fff; }
+    .perm.off { opacity: .5; }
+    .perm.off .mark { background: var(--muted-soft); color: var(--ink-soft); }
+    .who { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; font-size: .92rem; color: var(--ink-soft); }
+    .who b { color: var(--ink); }
+
+    /* forms */
+    label { display: block; font-size: .82rem; font-weight: 600; margin: 12px 0 6px; color: var(--ink-soft); }
+    input, select, textarea { width: 100%; font: inherit; color: var(--ink); background: var(--card-solid); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+    input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+    .seg { display: flex; gap: 6px; }
+    .seg button { flex: 1; }
+    .btn { font: inherit; font-weight: 600; font-size: .9rem; cursor: pointer; padding: 10px 16px; border-radius: 12px; border: 1px solid var(--accent); background: var(--accent); color: #fff; }
+    .btn.ghost { background: transparent; color: var(--accent); }
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
+    .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+
+    /* bill */
+    .bill-lines { width: 100%; border-collapse: collapse; font-size: .92rem; }
+    .bill-lines td { padding: 9px 0; border-bottom: 1px dashed var(--line); }
+    .bill-lines td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+    .bill-total { display: flex; justify-content: space-between; align-items: baseline; margin-top: 14px; }
+    .bill-total .amt { font-family: var(--font-display); font-size: 2rem; color: var(--accent); font-variant-numeric: tabular-nums; }
+    .slab-bar { display: flex; height: 12px; border-radius: 999px; overflow: hidden; background: var(--muted-soft); margin-top: 16px; }
+    .slab-bar i { display: block; height: 100%; transition: width .25s; }
+    .slab-bar .a { background: var(--accent-hi); }
+    .slab-bar .b { background: var(--warn); }
+    .legend { display: flex; gap: 14px; font-size: .78rem; color: var(--ink-soft); margin-top: 6px; }
+    .legend span::before { content: ""; display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 5px; background: var(--c); }
+    .paid-banner { margin-top: 14px; padding: 12px 14px; border-radius: 12px; background: var(--ok-soft); font-size: .9rem; display: none; }
+
+    /* complaint */
+    .pipeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 18px; }
+    .pipeline div { text-align: center; font-size: .78rem; font-weight: 600; padding: 8px 4px; border-radius: 10px; background: var(--muted-soft); color: var(--ink-soft); }
+    .pipeline div.done { background: var(--accent-soft); color: var(--ink); }
+    .pipeline div.now { background: var(--accent); color: #fff; }
+    .actor { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); font-weight: 600; }
+    .timeline { list-style: none; border-left: 2px solid var(--line); margin-left: 6px; padding-left: 18px; }
+    .timeline li { position: relative; padding-bottom: 14px; font-size: .9rem; }
+    .timeline li::before { content: ""; position: absolute; left: -24px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+    .timeline .t { font-size: .75rem; color: var(--ink-soft); }
+    .timeline .note { margin-top: 4px; padding: 6px 10px; border-radius: 8px; background: var(--muted-soft); font-size: .85rem; }
+    .badge { display: inline-block; font-size: .75rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; }
+    .badge.open { background: var(--warn-soft); color: var(--warn); }
+    .badge.assigned, .badge.in-progress { background: var(--info-soft); color: var(--info); }
+    .badge.resolved { background: var(--ok-soft); color: var(--accent); }
+    .hint { font-size: .82rem; color: var(--ink-soft); margin-top: 10px; }
+    .empty { color: var(--ink-soft); font-size: .9rem; }
+
+    /* creds + links */
+    .creds table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+    .creds th, .creds td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); }
+    .creds th { font-size: .75rem; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-soft); }
+    .table-scroll { overflow-x: auto; }
+    .doors a { display: block; text-decoration: none; color: var(--ink); }
+    .doors .icon { font-size: 1.6rem; }
+    .doors h3 { font-family: var(--font-display); margin: 6px 0 4px; }
+    .doors p { color: var(--ink-soft); font-size: .9rem; }
+    .doors .go { display: inline-block; margin-top: 10px; color: var(--accent); font-weight: 600; font-size: .9rem; }
+    footer { margin-top: 48px; text-align: center; color: var(--ink-soft); font-size: .82rem; }
+
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand"><span class="bolt">⚡</span><span>VoltGrid<small>Electricity Management · Demo tour</small></span></div>
+    <button class="theme-btn" id="themeBtn" type="button">◐ Theme</button>
+  </header>
+
+  <section class="hero">
+    <p class="eyebrow">Interactive project demo</p>
+    <h1>Meter to money,<br /><span>in five minutes.</span></h1>
+    <p class="lead">
+      A guided walkthrough of VoltGrid, a front-end-only electricity management
+      system built in plain HTML, CSS and JavaScript. Try the role model, generate
+      a bill and pay it, and follow a complaint from customer to field agent and back.
+      Everything below runs on this page alone.
+    </p>
+    <div class="chips">
+      <span class="chip">No frameworks</span>
+      <span class="chip">No backend</span>
+      <span class="chip">localStorage data store</span>
+      <span class="chip">2 account types · 3 positions</span>
+      <span class="chip">Card &amp; UPI payments</span>
+    </div>
+  </section>
+
+  <nav class="steps" aria-label="Demo steps">
+    <a href="#arch"><b>1</b>How it's built</a>
+    <a href="#roles"><b>2</b>Roles</a>
+    <a href="#billing"><b>3</b>Billing</a>
+    <a href="#complaint"><b>4</b>Complaints</a>
+    <a href="#try"><b>5</b>Try the real app</a>
+  </nav>
+
+  <!-- 1. Architecture -->
+  <section class="block" id="arch">
+    <h2>1 · How it's built</h2>
+    <p class="sub">Every page is an HTML file with one small script. They all share a single data object, so the whole app works without a server.</p>
+    <div class="grid-3 arch">
+      <div class="card">
+        <h3>📄 Pages</h3>
+        <p><code>customer/</code>, <code>employee/</code> and <code>admin/</code> hold 20 screens. Each <code>page.html</code> has a matching <code>js/&lt;folder&gt;/page.js</code>.</p>
+      </div>
+      <div class="card">
+        <h3>🧠 <code>js/data.js</code></h3>
+        <p>The <code>EMS</code> object holds customers, staff, tariffs, bills, complaints and payments, plus every function that changes them. Data persists in <code>localStorage</code>.</p>
+      </div>
+      <div class="card">
+        <h3>🧭 <code>js/chrome.js</code></h3>
+        <p>Builds the staff menu from the signed-in employee's position and adds the footer, so each person only sees the links they're allowed to.</p>
+      </div>
+    </div>
+    <div class="flow" aria-label="Page lifecycle">
+      <span class="node">Page loads</span><span class="arrow">→</span>
+      <span class="node">EMS.requireRole / requirePerm</span><span class="arrow">→</span>
+      <span class="node core">Read from EMS</span><span class="arrow">→</span>
+      <span class="node">Build rows as HTML</span><span class="arrow">→</span>
+      <span class="node">Save back to localStorage</span>
+    </div>
+  </section>
+
+  <!-- 2. Roles -->
+  <section class="block" id="roles">
+    <h2>2 · One employee role, three positions</h2>
+    <p class="sub">There's no separate admin login. An employee's position decides their capabilities, and the menu, page guards and buttons all read from them.</p>
+    <div class="card">
+      <div class="tabs" role="tablist" id="roleTabs"></div>
+      <div class="who" id="roleWho"></div>
+      <div class="perm-list" id="permList"></div>
+      <p class="hint" id="roleAssign"></p>
+    </div>
+  </section>
+
+  <!-- 3. Billing -->
+  <section class="block" id="billing">
+    <h2>3 · Generate a bill, then pay it</h2>
+    <p class="sub">This uses the same rules as <code>EMS.computeBill</code>: the first 200 units at Slab A, the rest at Slab B, or a flat green rooftop rate, plus a fixed ₹50 service charge.</p>
+    <div class="grid-2">
+      <div class="card">
+        <span class="actor">Supervisor · Billing</span>
+        <label for="bCust">Customer</label>
+        <select id="bCust">
+          <option value="Anita Menon · MTR-58291">Anita Menon · MTR-58291</option>
+          <option value="Ravi Kumar · MTR-77410">Ravi Kumar · MTR-77410</option>
+        </select>
+        <label for="bUnits">Metered units (kWh): <b id="bUnitsOut">214</b></label>
+        <input type="range" id="bUnits" min="0" max="600" value="214" />
+        <label>Tariff mode</label>
+        <div class="seg" role="radiogroup" id="bMode">
+          <button type="button" class="btn" data-mode="standard" aria-pressed="true">Standard slabs</button>
+          <button type="button" class="btn ghost" data-mode="green" aria-pressed="false">Green rooftop</button>
+        </div>
+        <details style="margin-top:14px">
+          <summary style="cursor:pointer;font-size:.88rem;color:var(--ink-soft)">Edit tariff rates (Grid Manager · Policies)</summary>
+          <div class="grid-3" style="gap:8px">
+            <div><label for="rA">Slab A ₹/unit</label><input id="rA" type="number" step="0.05" min="0" value="4.50" /></div>
+            <div><label for="rB">Slab B ₹/unit</label><input id="rB" type="number" step="0.05" min="0" value="6.25" /></div>
+            <div><label for="rG">Green ₹/unit</label><input id="rG" type="number" step="0.05" min="0" value="3.75" /></div>
+          </div>
+        </details>
+      </div>
+
+      <div class="card">
+        <span class="actor">Customer · Bills</span>
+        <div class="who" style="margin-top:6px"><span id="bWho"></span><span class="badge open" id="bStatus">Unpaid</span></div>
+        <table class="bill-lines"><tbody id="bLines"></tbody></table>
+        <div class="slab-bar" aria-hidden="true"><i class="a" id="barA"></i><i class="b" id="barB"></i></div>
+        <div class="legend"><span style="--c:var(--accent-hi)">Slab A</span><span style="--c:var(--warn)">Slab B</span></div>
+        <div class="bill-total"><span>Total due</span><span class="amt" id="bTotal">₹0.00</span></div>
+        <div class="row">
+          <button class="btn" type="button" data-pay="Card">💳 Pay by card</button>
+          <button class="btn ghost" type="button" data-pay="UPI">📱 Pay by UPI</button>
+        </div>
+        <div class="paid-banner" id="bPaid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Complaint lifecycle -->
+  <section class="block" id="complaint">
+    <h2>4 · Follow a complaint end to end</h2>
+    <p class="sub">Play each actor in turn. Complaints can only be routed downward: a Grid Manager assigns to anyone below them, a Supervisor only to field agents.</p>
+    <div class="grid-2">
+      <div class="card">
+        <div class="pipeline" id="kPipe">
+          <div>Open</div><div>Assigned</div><div>In Progress</div><div>Resolved</div>
+        </div>
+        <div id="kStage"></div>
+      </div>
+      <div class="card">
+        <div class="who"><span>Customer view · <b>My complaints</b></span><span id="kBadge"></span></div>
+        <div id="kSummary" class="empty">No complaint yet. Start as the customer on the left.</div>
+        <ul class="timeline" id="kTimeline" style="margin-top:14px"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Real app -->
+  <section class="block" id="try">
+    <h2>5 · Try the real app</h2>
+    <p class="sub">The real app keeps its data in your browser. To start over, run <code>EMS.resetDemo()</code> in the console.</p>
+    <div class="grid-3 doors">
+      <a class="card" href="customer/login.html"><div class="icon">🏠</div><h3>Customer portal</h3><p>Usage, bills, card/UPI payments and complaint tracking.</p><span class="go">Sign in →</span></a>
+      <a class="card" href="employee/login.html"><div class="icon">🛠️</div><h3>Employee portal</h3><p>Work queue, complaint board, billing, tariffs and staff, depending on position.</p><span class="go">Sign in →</span></a>
+      <a class="card" href="index.html"><div class="icon">⚡</div><h3>Landing page</h3><p>The live smart-meter hero and portal chooser.</p><span class="go">Open →</span></a>
+    </div>
+    <div class="card creds" style="margin-top:16px">
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Role</th><th>Position</th><th>Email</th><th>Password</th></tr></thead>
+          <tbody>
+            <tr><td>Customer</td><td>—</td><td><code>anita@example.com</code></td><td><code>anita123</code></td></tr>
+            <tr><td>Customer</td><td>—</td><td><code>ravi@example.com</code></td><td><code>ravi123</code></td></tr>
+            <tr><td>Employee</td><td>Grid Manager</td><td><code>suresh@voltgrid.com</code></td><td><code>suresh123</code></td></tr>
+            <tr><td>Employee</td><td>Supervisor</td><td><code>priya@voltgrid.com</code></td><td><code>priya123</code></td></tr>
+            <tr><td>Employee</td><td>Field Agent</td><td><code>arjun@voltgrid.com</code></td><td><code>arjun123</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <footer>VoltGrid · Electricity Management System · demo tour. Nothing on this page touches the app's stored data.</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- Theme toggle ---------- */
+  var root = document.documentElement;
+  try { var saved = localStorage.getItem("vg_demo_theme"); if (saved) root.dataset.theme = saved; } catch (e) {}
+  document.getElementById("themeBtn").addEventListener("click", function () {
+    var dark = root.dataset.theme ? root.dataset.theme === "dark"
+      : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    root.dataset.theme = dark ? "light" : "dark";
+    try { localStorage.setItem("vg_demo_theme", root.dataset.theme); } catch (e) {}
+  });
+
+  var money = function (n) { return "₹" + Number(n).toFixed(2); };
+  var esc = function (s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); };
+  var stamp = function () {
+    var d = new Date(), p = function (n) { return String(n).padStart(2, "0"); };
+    return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes());
+  };
+
+  /* ---------- 2. Roles (mirrors POSITIONS in js/data.js) ---------- */
+  var PERMS = [
+    ["work", "My work queue"], ["lookup", "Customer lookup"], ["overview", "Operations overview"],
+    ["complaints", "Complaint board"], ["assign", "Assign complaints"], ["billing", "Generate bills"],
+    ["customers", "Manage customers"], ["policies", "Tariffs & policies"], ["employees", "Manage staff"]
+  ];
+  var POSITIONS = {
+    "Grid Manager": { tier: 3, who: "Suresh Nair", perms: ["work","overview","complaints","assign","lookup","billing","customers","policies","employees"] },
+    "Supervisor":   { tier: 2, who: "Priya Das",   perms: ["work","overview","complaints","assign","lookup","billing","customers"] },
+    "Field Agent":  { tier: 1, who: "Arjun Rao",   perms: ["work","lookup"] }
+  };
+  var tabs = document.getElementById("roleTabs");
+  function showRole(name) {
+    var p = POSITIONS[name];
+    Array.prototype.forEach.call(tabs.children, function (t) { t.setAttribute("aria-selected", t.textContent === name); });
+    document.getElementById("roleWho").innerHTML =
+      "<span>Signed in as <b>" + p.who + "</b> · " + name + "</span><span>Tier <b>" + p.tier + "</b> · " + p.perms.length + " of " + PERMS.length + " capabilities</span>";
+    document.getElementById("permList").innerHTML = PERMS.map(function (pr) {
+      var on = p.perms.indexOf(pr[0]) !== -1;
+      return '<div class="perm ' + (on ? "on" : "off") + '"><span class="mark">' + (on ? "✓" : "–") + "</span>" + pr[1] + "</div>";
+    }).join("");
+    var below = Object.keys(POSITIONS).filter(function (k) { return POSITIONS[k].tier < p.tier; });
+    document.getElementById("roleAssign").textContent = below.length
+      ? "Can route complaints down to: " + below.join(", ") + "."
+      : "Can't assign complaints. Works only what's assigned to them.";
+  }
+  Object.keys(POSITIONS).forEach(function (name) {
+    var b = document.createElement("button");
+    b.className = "tab"; b.type = "button"; b.setAttribute("role", "tab"); b.textContent = name;
+    b.addEventListener("click", function () { showRole(name); });
+    tabs.appendChild(b);
+  });
+  showRole("Grid Manager");
+
+  /* ---------- 3. Billing (mirrors EMS.computeBill) ---------- */
+  var SLAB_LIMIT = 200, SERVICE_CHARGE = 50, mode = "standard", paid = false;
+  var $ = function (id) { return document.getElementById(id); };
+  function rate(id, fb) { var v = parseFloat($(id).value); return isNaN(v) || v < 0 ? fb : v; }
+
+  function computeBill(units, m) {
+    var r = { slabA: rate("rA", 4.5), slabB: rate("rB", 6.25), green: rate("rG", 3.75) };
+    var lines = [], energy = 0, t1 = 0, t2 = 0;
+    if (m === "green") {
+      energy = units * r.green;
+      lines.push([units + " units × ₹" + r.green.toFixed(2) + " · Green rooftop", energy]);
+    } else {
+      t1 = Math.min(units, SLAB_LIMIT); t2 = Math.max(0, units - SLAB_LIMIT);
+      if (t1 > 0) { energy += t1 * r.slabA; lines.push([t1 + " units × ₹" + r.slabA.toFixed(2) + " · Slab A", t1 * r.slabA]); }
+      if (t2 > 0) { energy += t2 * r.slabB; lines.push([t2 + " units × ₹" + r.slabB.toFixed(2) + " · Slab B", t2 * r.slabB]); }
+      if (units === 0) lines.push(["No consumption recorded", 0]);
+    }
+    lines.push(["Fixed service charge", SERVICE_CHARGE]);
+    return { lines: lines, t1: t1, t2: t2, total: Math.round((energy + SERVICE_CHARGE) * 100) / 100 };
+  }
+
+  function renderBill() {
+    var units = parseInt($("bUnits").value, 10);
+    $("bUnitsOut").textContent = units;
+    var b = computeBill(units, mode);
+    $("bWho").innerHTML = "<b>" + esc($("bCust").value) + "</b>";
+    $("bLines").innerHTML = b.lines.map(function (l) { return "<tr><td>" + l[0] + "</td><td>" + money(l[1]) + "</td></tr>"; }).join("");
+    $("bTotal").textContent = money(b.total);
+    var max = 600;
+    $("barA").style.width = (mode === "green" ? (units / max) * 100 : (b.t1 / max) * 100) + "%";
+    $("barA").style.background = mode === "green" ? "var(--accent)" : "";
+    $("barB").style.width = (b.t2 / max) * 100 + "%";
+  }
+
+  function resetPaid() {
+    if (!paid) return;
+    paid = false;
+    $("bStatus").className = "badge open"; $("bStatus").textContent = "Unpaid";
+    $("bPaid").style.display = "none";
+    document.querySelectorAll("[data-pay]").forEach(function (b) { b.disabled = false; });
+  }
+
+  ["bUnits", "bCust", "rA", "rB", "rG"].forEach(function (id) {
+    $(id).addEventListener("input", function () { resetPaid(); renderBill(); });
+  });
+  document.querySelectorAll("#bMode button").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      mode = btn.dataset.mode;
+      document.querySelectorAll("#bMode button").forEach(function (b) {
+        var on = b === btn; b.classList.toggle("ghost", !on); b.setAttribute("aria-pressed", on);
+      });
+      resetPaid(); renderBill();
+    });
+  });
+  var txn = 3002;
+  document.querySelectorAll("[data-pay]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      paid = true;
+      $("bStatus").className = "badge resolved"; $("bStatus").textContent = "Paid";
+      $("bPaid").innerHTML = "✅ Payment successful · <b>T" + (txn++) + "</b> · " + $("bTotal").textContent + " via " + btn.dataset.pay + " · " + stamp();
+      $("bPaid").style.display = "block";
+      document.querySelectorAll("[data-pay]").forEach(function (b) { b.disabled = true; });
+    });
+  });
+  renderBill();
+
+  /* ---------- 4. Complaint lifecycle ---------- */
+  var STAGES = ["Open", "Assigned", "In Progress", "Resolved"];
+  var k = null; // the simulated complaint
+  var stage = $("kStage");
+
+  function pipe() {
+    var idx = k ? STAGES.indexOf(k.status) : -1;
+    Array.prototype.forEach.call($("kPipe").children, function (d, i) {
+      d.className = i < idx ? "done" : i === idx ? "now" : "";
+    });
+  }
+
+  function renderCustomerView() {
+    pipe();
+    if (!k) { $("kSummary").className = "empty"; $("kSummary").textContent = "No complaint yet. Start as the customer on the left."; $("kTimeline").innerHTML = ""; $("kBadge").innerHTML = ""; return; }
+    $("kBadge").innerHTML = '<span class="badge ' + k.status.toLowerCase().replace(/\s+/g, "-") + '">' + k.status + "</span>";
+    $("kSummary").className = "";
+    $("kSummary").innerHTML = "<b>" + k.id + " · " + esc(k.type) + "</b><br><span style='color:var(--ink-soft);font-size:.9rem'>" + esc(k.description) + "</span>";
+    $("kTimeline").innerHTML = k.updates.map(function (u) {
+      return '<li><div class="t">' + u.at + "</div>" + esc(u.what) + (u.note ? '<div class="note">' + esc(u.note) + "</div>" : "") + "</li>";
+    }).join("");
+  }
+
+  function log(what, note) { k.updates.push({ at: stamp(), what: what, note: note || "" }); }
+
+  function stepCustomer() {
+    stage.innerHTML =
+      '<span class="actor">Step 1 · Customer · Anita Menon</span>' +
+      '<label for="kType">Category</label><select id="kType"><option>Power outage</option><option>Voltage fluctuation</option><option>Billing dispute</option><option>Meter fault</option><option>Damaged line / pole</option><option>Other</option></select>' +
+      '<label for="kDesc">What happened?</label><textarea id="kDesc" rows="3">Lights flicker and the power drops every evening after 7 pm.</textarea>' +
+      '<div class="row"><button class="btn" id="kGo" type="button">Submit complaint</button></div>';
+    $("kGo").onclick = function () {
+      var desc = $("kDesc").value.trim();
+      if (!desc) { $("kDesc").focus(); return; }
+      k = { id: "K7002", type: $("kType").value, description: desc, status: "Open", updates: [] };
+      log("Complaint registered");
+      renderCustomerView(); stepRoute();
+    };
+  }
+
+  function stepRoute() {
+    stage.innerHTML =
+      '<span class="actor">Step 2 · Staff · Complaint board</span>' +
+      '<label for="kBy">Signed in as</label><select id="kBy"><option value="3">Suresh Nair · Grid Manager</option><option value="2">Priya Das · Supervisor</option><option value="1">Arjun Rao · Field Agent</option></select>' +
+      '<label for="kTo">Assign to</label><select id="kTo"></select>' +
+      '<p class="hint" id="kRule"></p>' +
+      '<div class="row"><button class="btn" id="kGo" type="button">Assign</button></div>';
+    var staff = [["Priya Das", "Supervisor", 2], ["Arjun Rao", "Field Agent", 1]];
+    function fill() {
+      var tier = parseInt($("kBy").value, 10);
+      var opts = staff.filter(function (s) { return s[2] < tier; });
+      $("kTo").innerHTML = opts.map(function (s) { return "<option>" + s[0] + " · " + s[1] + "</option>"; }).join("");
+      $("kTo").disabled = $("kGo").disabled = !opts.length;
+      $("kRule").textContent = opts.length ? "Only lower-tier employees appear in this list."
+        : "A Field Agent has no complaint board and can't assign. Switch to a manager or supervisor.";
+    }
+    $("kBy").onchange = fill; fill();
+    $("kGo").onclick = function () {
+      var to = $("kTo").value;
+      k.assignee = to.split(" · ")[0];
+      k.status = "Assigned"; log("Assigned to " + k.assignee);
+      renderCustomerView(); stepWork();
+    };
+  }
+
+  function stepWork() {
+    stage.innerHTML =
+      '<span class="actor">Step 3 · ' + esc(k.assignee) + ' · My work</span>' +
+      '<p class="hint">' + k.id + " is now in " + esc(k.assignee) + "'s queue.</p>" +
+      '<label for="kSt">New status</label><select id="kSt">' +
+        (k.status === "Assigned" ? "<option>In Progress</option>" : "") + "<option>Resolved</option></select>" +
+      '<label for="kNote">Note for the customer</label><textarea id="kNote" rows="3">' +
+        (k.status === "Assigned" ? "Crew dispatched to inspect the feeder line." : "Replaced a faulty fuse at the local transformer. Supply is stable.") + "</textarea>" +
+      '<div class="row"><button class="btn" id="kGo" type="button">Update status</button></div>';
+    $("kGo").onclick = function () {
+      k.status = $("kSt").value; log("Status changed to " + k.status, $("kNote").value.trim());
+      renderCustomerView();
+      k.status === "Resolved" ? stepDone() : stepWork();
+    };
+  }
+
+  function stepDone() {
+    stage.innerHTML =
+      '<span class="actor">Step 4 · Customer · My complaints</span>' +
+      '<p style="margin:10px 0">🎉 The full timeline, notes included, is on the right. That\'s what Anita sees in the real app.</p>' +
+      '<div class="row"><button class="btn ghost" id="kGo" type="button">Run it again</button></div>';
+    $("kGo").onclick = function () { k = null; renderCustomerView(); stepCustomer(); };
+  }
+
+  stepCustomer(); renderCustomerView();
+})();
+</script>
+</body>
+</html>
