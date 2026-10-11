@@ -75,3 +75,102 @@ const V = (() => {
            cardNumber, cvv, upiId, expiry,
            validate, liveClear, setError, clearError };
 })();
+
+
+/* ============================================================
+   InputValidator — a reusable class for the same job, with a
+   chainable style that reads like a sentence. It reuses the
+   checks and error helpers in V above, and adds the ones the
+   pages were doing by hand (max length, number ranges, whole
+   numbers, "must match another field", dates, custom rules).
+
+   Example:
+     const ok = new InputValidator()
+       .field("units").required("Enter the units consumed")
+                      .number("Units must be a number")
+                      .min(0, "Units cannot be negative")
+       .field("confirm").matches("password", "Passwords do not match")
+       .validate();
+
+   Like V.validate, only the first failing message per field is
+   shown, and validate() returns true when every field passes.
+   ============================================================ */
+
+class InputValidator {
+  constructor() {
+    this.rules = [];          // [{ id, checks: [[testFn, message], ...] }]
+    this.current = null;      // the rule that new checks are added to
+  }
+
+  /* Start a new field. Every check after this applies to it. */
+  field(id) {
+    this.current = { id, checks: [] };
+    this.rules.push(this.current);
+    return this;
+  }
+
+  /* Add any test function (value => true when valid). */
+  check(test, message) {
+    if (!this.current) throw new Error("InputValidator: call field(id) before adding checks");
+    this.current.checks.push([test, message]);
+    return this;
+  }
+
+  /* ---------- Text ---------- */
+  required(message = "This field is required")    { return this.check(V.required, message); }
+  email(message = "Enter a valid email")           { return this.check(V.email, message); }
+  phone(message = "Enter a valid 10-digit mobile") { return this.check(V.phone, message); }
+  minLength(n, message = `Use at least ${n} characters`) { return this.check(V.minLen(n), message); }
+  maxLength(n, message = `Keep it to ${n} characters or fewer`) {
+    return this.check((v) => v.trim().length <= n, message);
+  }
+  pattern(regex, message = "Enter a valid value") { return this.check((v) => regex.test(v.trim()), message); }
+
+  /* ---------- Numbers ---------- */
+  number(message = "Must be a number")              { return this.check(V.number, message); }
+  positive(message = "Must be a positive number")   { return this.check(V.positive, message); }
+  integer(message = "Must be a whole number") {
+    return this.check((v) => V.number(v) && Number.isInteger(Number(v)), message);
+  }
+  min(n, message = `Must be at least ${n}`)  { return this.check((v) => V.number(v) && Number(v) >= n, message); }
+  max(n, message = `Must be at most ${n}`)   { return this.check((v) => V.number(v) && Number(v) <= n, message); }
+  between(lo, hi, message = `Must be between ${lo} and ${hi}`) {
+    return this.check((v) => V.number(v) && Number(v) >= lo && Number(v) <= hi, message);
+  }
+
+  /* ---------- Payment ---------- */
+  cardNumber(message = "Enter a valid 16-digit card number") { return this.check(V.cardNumber, message); }
+  cvv(message = "Enter the 3-digit CVV")                     { return this.check(V.cvv, message); }
+  expiry(message = "Enter a future expiry as MM/YY")         { return this.check(V.expiry, message); }
+  upiId(message = "Enter a valid UPI ID")                    { return this.check(V.upiId, message); }
+
+  /* ---------- Cross-field and dates ---------- */
+  /* Value must equal another input's value (e.g. confirm password). */
+  matches(otherId, message = "Values do not match") {
+    return this.check((v) => {
+      const other = document.getElementById(otherId);
+      return !!other && v.trim() === other.value.trim();
+    }, message);
+  }
+
+  /* A date input (YYYY-MM-DD) that is today or later. */
+  notPastDate(message = "Date cannot be in the past") {
+    return this.check((v) => {
+      const d = new Date(v.trim() + "T00:00:00");
+      if (isNaN(d)) return false;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return d >= today;
+    }, message);
+  }
+
+  /* ---------- Running it ---------- */
+  /* Show errors on the page; true when every field passes. */
+  validate() { return V.validate(this.rules); }
+
+  /* Clear each field's error as the user types. */
+  liveClear() {
+    V.liveClear(this.rules.map((r) => r.id));
+    return this;
+  }
+}

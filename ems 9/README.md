@@ -24,7 +24,9 @@ own small JavaScript file, and they all share one data file.
   menu **from the signed-in employee's position** (so each person only
   sees the links they're allowed to) and adds the footer to every page.
   This is why the individual staff pages don't repeat that code.
-- `js/validation.js` — tiny form-validation helper used by the forms.
+- `js/validation.js` — tiny form-validation helper used by the forms:
+  the `V` checks plus an `InputValidator` class with a chainable style,
+  e.g. `new InputValidator().field("units").required().min(0).validate()`.
 - `customer/`, `employee/`, `admin/` — the actual pages. Each `.html`
   page has a matching `.js` file in `js/<folder>/` with the same name.
 
