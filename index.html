@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VoltGrid EMS</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      color: #f1f5f9;
+      line-height: 1.6;
+    }
+
+    a { color: #60a5fa; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* --- Navigation --- */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 40px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .brand small {
+      font-size: 11px;
+      font-weight: 400;
+      color: #94a3b8;
+      display: block;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: #cbd5e1;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: #f1f5f9; text-decoration: none; }
+
+    .nav-cta {
+      background: #3b82f6;
+      color: #fff;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .nav-cta:hover { background: #2563eb; }
+
+    /* --- Hero --- */
+    .hero {
+      text-align: center;
+      padding: 80px 20px 60px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .hero .bolt {
+      font-size: 56px;
+      display: block;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: 42px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .hero h1 .highlight {
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      color: #94a3b8;
+      font-size: 17px;
+      max-width: 520px;
+      margin: 0 auto 32px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: #3b82f6;
+      color: #fff;
+      padding: 12px 28px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-primary:hover { background: #2563eb; text-decoration: none; }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: #cbd5e1;
+      padding: 12px 28px;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.1); text-decoration: none; }
+
+    .status-bar {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      border-radius: 999px;
+      padding: 6px 16px;
+      font-size: 13px;
+      color: #4ade80;
+      margin-top: 28px;
+    }
+
+    .status-bar .dot {
+      width: 8px;
+      height: 8px;
+      background: #4ade80;
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* --- Stats --- */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      padding: 40px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: #f1f5f9;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    /* --- Features --- */
+    .features {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 72px 20px;
+    }
+
+    .features h2 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .features > p {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 15px;
+      margin-bottom: 48px;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 28px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(59, 130, 246, 0.4);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .feature-icon {
+      font-size: 28px;
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .feature-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .feature-card p {
+      color: #94a3b8;
+      font-size: 14px;
+    }
+
+    /* --- Portals --- */
+    .portals {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 20px 72px;
+    }
+
+    .portals h2 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+
+    .portals > p {
+      text-align: center;
+      color: #94a3b8;
+      font-size: 15px;
+      margin-bottom: 48px;
+    }
+
+    .portal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .portal-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 32px;
+      text-align: center;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .portal-card:hover {
+      border-color: rgba(59, 130, 246, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .portal-icon {
+      font-size: 36px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .portal-card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .portal-card p {
+      color: #94a3b8;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .portal-card .btn-secondary {
+      display: inline-block;
+      padding: 8px 20px;
+      font-size: 13px;
+    }
+
+    /* --- How It Works --- */
+    .how-it-works {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 72px 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .how-it-works h2 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 48px;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 32px;
+      counter-reset: step;
+    }
+
+    .step {
+      text-align: center;
+      counter-increment: step;
+    }
+
+    .step::before {
+      content: counter(step);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 50%;
+      font-size: 16px;
+      font-weight: 700;
+      color: #60a5fa;
+      margin-bottom: 14px;
+    }
+
+    .step h3 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .step p {
+      color: #94a3b8;
+      font-size: 13px;
+    }
+
+    /* --- FAQ --- */
+    .faq {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 0 20px 72px;
+    }
+
+    .faq h2 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 36px;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 20px 0;
+    }
+
+    .faq-item summary {
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+      color: #e2e8f0;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .faq-item summary::after {
+      content: '+';
+      font-size: 20px;
+      color: #64748b;
+      transition: transform 0.2s;
+    }
+
+    .faq-item[open] summary::after {
+      content: '-';
+    }
+
+    .faq-item p {
+      color: #94a3b8;
+      font-size: 14px;
+      margin-top: 12px;
+    }
+
+    /* --- Footer --- */
+    footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 40px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-brand {
+      font-size: 14px;
+      color: #64748b;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: #64748b;
+      font-size: 13px;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: #cbd5e1; }
+
+    /* --- Responsive --- */
+    @media (max-width: 640px) {
+      nav { padding: 16px 20px; }
+      .nav-links { display: none; }
+      .hero h1 { font-size: 28px; }
+      .stats { gap: 24px; }
+      .stat-value { font-size: 24px; }
+      footer { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="brand">
+      <span>&#9889;</span>
+      <span>VoltGrid<small>Electricity Management</small></span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#portals">Portals</a></li>
+      <li><a href="#how-it-works">How It Works</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <button class="nav-cta">Get Started</button>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <span class="bolt">&#9889;</span>
+    <h1>Meter to money,<br><span class="highlight">handled in one place.</span></h1>
+    <p>VoltGrid is a complete electricity management system for utilities, employees, and customers. Track usage, manage billing, and resolve complaints — all from one platform.</p>
+    <div class="hero-buttons">
+      <a href="#portals" class="btn-primary">Access Your Portal</a>
+      <a href="#features" class="btn-secondary">Explore Features</a>
+    </div>
+    <span class="status-bar">
+      <span class="dot"></span>
+      Grid online &middot; all services operational
+    </span>
+  </section>
+
+  <!-- Stats -->
+  <section class="stats">
+    <div class="stat">
+      <div class="stat-value">10K+</div>
+      <div class="stat-label">Active Accounts</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">99.9%</div>
+      <div class="stat-label">Uptime</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">24/7</div>
+      <div class="stat-label">Support Available</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value">&lt;2hr</div>
+      <div class="stat-label">Complaint Resolution</div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="features" id="features">
+    <h2>Everything you need to manage electricity</h2>
+    <p>A full-featured platform covering billing, complaints, customer management, and more.</p>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <span class="feature-icon">&#128176;</span>
+        <h3>Billing &amp; Payments</h3>
+        <p>View bills, make secure online payments, and download invoices. Supports multiple payment methods with instant confirmation.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">&#128200;</span>
+        <h3>Usage Tracking</h3>
+        <p>Monitor your electricity consumption in real time. Get insights into peak hours and optimize your energy spending.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">&#128221;</span>
+        <h3>Complaint Management</h3>
+        <p>Register and track complaints online. Get real-time status updates and resolution timelines from assigned technicians.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">&#128101;</span>
+        <h3>Customer Management</h3>
+        <p>Manage customer profiles, connection details, and account history. Quick lookup for employees to provide efficient service.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">&#128220;</span>
+        <h3>Policy Management</h3>
+        <p>Define and manage tariff plans, rate structures, and billing policies. Changes propagate instantly across the system.</p>
+      </div>
+      <div class="feature-card">
+        <span class="feature-icon">&#128274;</span>
+        <h3>Secure Access</h3>
+        <p>Role-based access control ensures the right people see the right data. Separate portals for admins, employees, and customers.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Portals -->
+  <section class="portals" id="portals">
+    <h2>Access your portal</h2>
+    <p>Three dedicated portals tailored for each role in the system.</p>
+    <div class="portal-grid">
+      <div class="portal-card">
+        <span class="portal-icon">&#128188;</span>
+        <h3>Admin Portal</h3>
+        <p>Full system oversight. Manage employees, customers, policies, billing, and complaints from a centralized dashboard.</p>
+        <a href="#" class="btn-secondary">Admin Login</a>
+      </div>
+      <div class="portal-card">
+        <span class="portal-icon">&#128736;</span>
+        <h3>Employee Portal</h3>
+        <p>Handle assigned complaints, look up customer records, and update service statuses efficiently.</p>
+        <a href="#" class="btn-secondary">Employee Login</a>
+      </div>
+      <div class="portal-card">
+        <span class="portal-icon">&#128100;</span>
+        <h3>Customer Portal</h3>
+        <p>View and pay bills, register complaints, track resolution progress, and manage your account details.</p>
+        <a href="#" class="btn-secondary">Customer Login</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="how-it-works" id="how-it-works">
+    <h2>How it works</h2>
+    <div class="steps">
+      <div class="step">
+        <h3>Register</h3>
+        <p>Create your account with basic details and your meter number to get started.</p>
+      </div>
+      <div class="step">
+        <h3>Connect</h3>
+        <p>Link your electricity connection and verify your identity to access your dashboard.</p>
+      </div>
+      <div class="step">
+        <h3>Manage</h3>
+        <p>View bills, make payments, track usage, and submit complaints — all in one place.</p>
+      </div>
+      <div class="step">
+        <h3>Resolve</h3>
+        <p>Get fast responses from assigned employees and track every complaint to closure.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq" id="faq">
+    <h2>Frequently asked questions</h2>
+    <details class="faq-item">
+      <summary>How do I register for an account?</summary>
+      <p>Click "Get Started" and fill in your personal details along with your meter number. Once verified, you'll receive login credentials to access the customer portal.</p>
+    </details>
+    <details class="faq-item">
+      <summary>What payment methods are supported?</summary>
+      <p>We support credit cards, debit cards, and net banking. All transactions are processed through a secure payment gateway with instant confirmation.</p>
+    </details>
+    <details class="faq-item">
+      <summary>How do I track my complaint status?</summary>
+      <p>After registering a complaint, you'll receive a tracking ID. Use it in the "Complaint Status" section of your dashboard to see real-time updates from the assigned technician.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Can I view my past bills and payment history?</summary>
+      <p>Yes. The customer portal maintains a complete history of all your bills, payments, and receipts. You can download them as PDF at any time.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Is my data secure?</summary>
+      <p>Absolutely. VoltGrid uses role-based access control, encrypted data transmission, and secure authentication to ensure your information is protected at all times.</p>
+    </details>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-brand">&#9889; VoltGrid EMS &copy; 2026. All rights reserved.</div>
+    <ul class="footer-links">
+      <li><a href="#">Privacy Policy</a></li>
+      <li><a href="#">Terms of Service</a></li>
+      <li><a href="#">Contact Us</a></li>
+      <li><a href="#">Help Center</a></li>
+    </ul>
+  </footer>
+
+</body>
+</html>
