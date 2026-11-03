@@ -1,3 +1,7 @@
 # Python bytecode cache
 __pycache__/
 *.py[cod]
+
+# Serial reader output
+com_capture.bin
+com_reader.log
